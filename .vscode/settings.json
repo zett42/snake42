@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "node_modules": true,
+    ".vscode": true,
+    "desc.md": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "readme.md": true,
+    "tsconfig.json": true,
+    "webpack.config.js": true,
+    "app.js": true,
+    ".gitignore": true,
+    "_start.bat": true
+  }
+}

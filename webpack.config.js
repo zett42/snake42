@@ -30,5 +30,6 @@ module.exports = {
     loaders: [
       { test: /\.ts$/, loader: 'ts-loader' },
     ],
+    noParse: [/p5.js$/]	
   }
 };
