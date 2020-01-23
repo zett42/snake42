@@ -1,4 +1,5 @@
 import * as p5 from 'p5'
+import './ecs.ts'
 
 const sketch = ( p: p5 ) => {
     let x = 100;

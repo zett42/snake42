@@ -8,7 +8,9 @@
   "scripts": {
     "start": "node app"
   },
-  "dependencies": {},
+  "dependencies": {
+    "perform-ecs": "^0.7.8"
+  },
   "devDependencies": {
     "@types/p5": "^0.9.0",
     "browser-sync": "^2.8.0",
