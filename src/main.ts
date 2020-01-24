@@ -1,23 +1,32 @@
-import * as p5 from 'p5'
-import './ecs.ts'
+import * as wutil from './utils/windowUtils'
+import { startGame } from './game/start'
 
-const sketch = ( p: p5 ) => {
-    let x = 100;
-    let y = 100;
-  
-    p.setup = () => {
-        p.createCanvas( p.windowWidth, p.windowHeight );
-    };
+//-------------------------------------------------------------------------------------------------------------------
 
-    p.windowResized = () => {
-        p.resizeCanvas( p.windowWidth, p.windowHeight );
-    }
-  
-    p.draw = () => {
-        p.background( 0 );
-        p.fill( 220, 220, 0 );
-        p.rect( x, y, 135, 100 );
-    };
-};
+function main() {
 
-const myp5 = new p5( sketch ); //, document.getElementById('p5sketch') );
+    const gameCanvas = document.getElementById( 'gameCanvas' ) as HTMLCanvasElement;
+
+    wireUpEventListeners( gameCanvas );
+
+    startGame( gameCanvas );
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+function wireUpEventListeners( gameCanvas : HTMLCanvasElement ) {
+    
+    // On window resize, resize the canvas to fill browser window dynamically.
+    // Use debounce() to avoid costly calculations while the window size is in flux.
+    window.addEventListener( "resize", () => wutil.resizeCanvasPixelBufferToWindowSize( gameCanvas ) );
+
+    // Handle keyboard
+    //document.addEventListener( "keydown", onKeyDown );
+
+    // Toggle fullscreen by double-click on canvas.
+    gameCanvas.addEventListener( "dblclick", wutil.toggleFullscreen );
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+main();

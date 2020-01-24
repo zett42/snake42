@@ -4,7 +4,7 @@ import { ISystem } from "./ISystem";
 
 export class System implements ISystem {
 
-    public ecs: ECS;
+    public ecs!: ECS;
 
     public update(dt: number): void {
 

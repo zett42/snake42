@@ -5,7 +5,7 @@ var path = require('path');
 
 module.exports = {
   debug: true,
-  devtool: '#eval-source-map',
+  devtool: 'source-map',
 
   entry: [
     './src/main.ts'
@@ -14,7 +14,8 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'app'),
     publicPath: '/',
-    filename: 'dist/bundle.js'
+    filename: 'dist/bundle.js',
+	devtoolModuleFilenameTemplate: '[absolute-resource-path]'
   },
 
   plugins: [
