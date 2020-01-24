@@ -1,4 +1,4 @@
-import { makeComponent, Component } from './ecs/Component'
+import { makeComponent, Component } from './perform-ecs'
 
 @makeComponent
 export class PositionComp extends Component {

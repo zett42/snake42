@@ -1,4 +1,4 @@
-import { ECS } from './ecs/ECS'
+import { ECS } from './perform-ecs'
 import { PositionComp } from './components'
 import { PositionSystem } from './systems'
 
@@ -16,22 +16,21 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
         { component: PositionComp }
     ]);
     
-    //console.log( `entity.id: ${entity.id}`);
-    
-    // create entity with arguments    
-    /*
+    console.log( `entity.id: ${entity.id}`);
+
+    // create entity with arguments  
     const entity2 = ecs.createEntity([ 
         { component: PositionComp, args: [ 2 ] }
     ]);
-    */
-    //console.log( `entity2.id: ${entity2.id}`);
 
-    //processAnimationFrame( ecs );
+    console.log( `entity2.id: ${entity2.id}`);
+
+    //gameLoop( ecs );
 }
 
 //-------------------------------------------------------------------------------------------------------------------
 
-function processAnimationFrame( ecs: ECS, lastTime: number = 0 ) {
+function gameLoop( ecs: ECS, lastTime: number = 0 ) {
 
     const time = performance.now() / 1000;
 
@@ -43,5 +42,5 @@ function processAnimationFrame( ecs: ECS, lastTime: number = 0 ) {
         ecs.update( deltaTime );
     }
 
-	requestAnimationFrame( () => processAnimationFrame( ecs, time ) );
+	requestAnimationFrame( () => gameLoop( ecs, time ) );
 }

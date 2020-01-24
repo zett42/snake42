@@ -1,5 +1,4 @@
-import { System, SystemEntityType } from './ecs/System'
-import { EntityViewFactory } from './ecs/EntityViewFactory'
+import { System, SystemEntityType, EntityViewFactory } from './perform-ecs'
 import { PositionComp } from './components'
 
 export class PositionSystem extends System {
