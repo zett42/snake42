@@ -34,7 +34,7 @@ export class ECS {
         entity.components.push(...components);
         for (const component of components) {
             const inst = this._getComponentInstance(component.component);
-            inst.reset(entity as any, ...component.args);
+            inst.reset(entity as any, ...(component.args ?? []) );
         }
         this._groupsRegistry.pushEntity(entity, components);
     }
