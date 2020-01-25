@@ -7,7 +7,7 @@ export class PositionComponent extends Component {
     }
 }
 
-export class VelocityComponent extends Component {
+export class DirectionComponent extends Component {
 
     constructor( public x: number = 0, public y: number = 0 ) {
         super();

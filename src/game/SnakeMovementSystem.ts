@@ -1,12 +1,12 @@
 import { Engine as ECS, IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent, VelocityComponent } from './PositionComponent'
+import { PositionComponent, DirectionComponent } from './PositionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents'
 
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     constructor() {
         const interval = 0.2;
-        super( Family.all( SnakeComponent, VelocityComponent ).get(), interval, /*, priority*/ );
+        super( Family.all( SnakeComponent, DirectionComponent ).get(), interval, /*, priority*/ );
     }
 
     protected processEntity( entity: Entity ): void {
@@ -16,7 +16,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         const ecs = this.getEngine()!;
 
         const snake    = entity.get( SnakeComponent )!;
-        const velocity = entity.get( VelocityComponent )!;
+        const direction = entity.get( DirectionComponent )!;
 
         const head     = ecs.getEntity( snake.headId )!;
         const headLink = head.get( LinkComponent )!;
@@ -37,8 +37,8 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         headLink.nextId = newHead.getId();
         
         const newHeadPos = newHead.get( PositionComponent )!;
-        newHeadPos.x = headPos.x + velocity.x;
-        newHeadPos.y = headPos.y + velocity.y;
+        newHeadPos.x = headPos.x + direction.x;
+        newHeadPos.y = headPos.y + direction.y;
 
         snake.tailId = newTail.getId();
         snake.headId = newHead.getId();

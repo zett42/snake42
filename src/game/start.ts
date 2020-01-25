@@ -1,8 +1,9 @@
 import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
-import { PositionComponent, VelocityComponent } from './PositionComponent'
-import { SnakeComponent, LinkComponent } from './SnakeComponents';
-import { SnakeMovementSystem } from './SnakeMovementSystem';
+import { PositionComponent, DirectionComponent } from './PositionComponent'
+import { SnakeComponent, LinkComponent } from './SnakeComponents'
+import { SnakeControlSystem } from './SnakeControlSystem'
+import { SnakeMovementSystem } from './SnakeMovementSystem'
 import { SnakeRenderSystem } from './SnakeRenderSystem'
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -19,6 +20,7 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     createSnake( ecs );
 
+    ecs.addSystem( new SnakeControlSystem() );
     ecs.addSystem( new SnakeMovementSystem() );
     ecs.addSystem( new SnakeRenderSystem( ctx, cols, rows ) );
 
@@ -42,7 +44,7 @@ function createSnake( ecs: ECS ) {
 
     const snake = ecs.createEntity();
     snake.add( new SnakeComponent( snakeHead.getId(), snakeTail.getId() ) );
-    snake.add( new VelocityComponent( 1, 0 ) );
+    snake.add( new DirectionComponent( 1, 0 ) );
     ecs.addEntity( snake );
 }
 
