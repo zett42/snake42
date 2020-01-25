@@ -1,32 +1,25 @@
-import { System, SystemEntityType, EntityViewFactory } from './perform-ecs'
+import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from './PositionComponent'
 import { LinkComponent } from './SnakeComponents'
 
-export class SnakeRenderSystem extends System {
+export class SnakeRenderSystem extends IteratingSystem {
 
     constructor( private ctx: CanvasRenderingContext2D, private columns: number, private rows: number ) {
-        super();
+        super( Family.all( PositionComponent, LinkComponent ).get() /*, priority*/ );
     }
 
-    // Create view which contains all entities that have components typical for snake.
-    view = EntityViewFactory.createView({
-        components: [ PositionComponent, LinkComponent ]
-    });
-    
-    update( delta: number ): void {     
+    protected processEntity( entity: Entity, deltaTime: number ): void {
 
-        for( const entity of this.view.entities ) {
+        const pos = entity.get( PositionComponent );
 
-            const x = ( entity.x + 0.5 ) / this.columns * this.ctx.canvas.width;
-            const y = ( entity.y + 0.5 ) / this.rows    * this.ctx.canvas.height;
-            const w = this.ctx.canvas.width  / this.columns;
-            const h = this.ctx.canvas.height / this.rows;
+        const x = ( pos!.x + 0.5 ) / this.columns * this.ctx.canvas.width;
+        const y = ( pos!.y + 0.5 ) / this.rows    * this.ctx.canvas.height;
+        const w = this.ctx.canvas.width  / this.columns;
+        const h = this.ctx.canvas.height / this.rows;
 
-            this.ctx.beginPath();
-            this.ctx.ellipse( x, y, w / 2, h / 2, 0, 0, Math.PI * 2 );
-            this.ctx.fillStyle = "#f2cf00";
-            this.ctx.fill();                
-        }
+        this.ctx.beginPath();
+        this.ctx.ellipse( x, y, w / 2, h / 2, 0, 0, Math.PI * 2 );
+        this.ctx.fillStyle = "#f2cf00";
+        this.ctx.fill();                   
     }
 }
-

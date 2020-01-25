@@ -6,18 +6,23 @@
   "author": "zett42",
   "license": "MIT",
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@types/p5": "^0.9.0",
     "browser-sync": "^2.8.0",
     "bs-fullscreen-message": "^1.0.0",
     "p5": "^0.10.2",
+    "patch-package": "^6.2.0",
     "strip-ansi": "^3.0.0",
     "ts-loader": "^0.8.1",
-    "typescript": "^3.7.5",
     "tslib": "^1.10.0",
+    "typescript": "^3.7.5",
     "webpack": "^1.10.5",
     "webpack-dev-middleware": "^1.2.0"
+  },
+  "dependencies": {
+    "typed-ecstasy": "^0.8.1"
   }
 }

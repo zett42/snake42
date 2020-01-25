@@ -1,4 +1,4 @@
-import { ECS } from './perform-ecs'
+import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
 import { PositionComponent, VelocityComponent } from './PositionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents';
@@ -9,7 +9,7 @@ import { SnakeRenderSystem } from './SnakeRenderSystem'
 
 export function startGame( gameCanvas : HTMLCanvasElement ) {
 
-    const cols = 80, rows = 50;
+    const cols = 80, rows = 45;
 
     const playField = new PlayField( cols, rows );
 
@@ -17,29 +17,33 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     const ctx = <CanvasRenderingContext2D> gameCanvas.getContext( '2d' );
 
-    const snakeMovementSystem = new SnakeMovementSystem();
-    ecs.registerSystem( snakeMovementSystem );
+    createSnake( ecs );
 
-    const snakeRenderSystem = new SnakeRenderSystem( ctx, cols, rows );
-    ecs.registerSystem( snakeRenderSystem );
-
-    const head = ecs.createEntity([ 
-        { component: PositionComponent, args: [ 0, 10 ] },
-        { component: LinkComponent },
-    ]);
-    const tail = ecs.createEntity([ 
-        { component: PositionComponent, args: [ 1, 10 ] },
-        { component: LinkComponent },
-    ]);
-    head.prevId = tail.id;
-    tail.nextId = head.id;
-
-    const snake = ecs.createEntity([
-        { component: SnakeComponent, args: [ head.id, tail.id ] },
-        { component: VelocityComponent, args: [ 1, 0 ] },
-    ]);
+    ecs.addSystem( new SnakeMovementSystem() );
+    ecs.addSystem( new SnakeRenderSystem( ctx, cols, rows ) );
 
     gameLoop( ctx, ecs );
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+
+function createSnake( ecs: ECS ) {
+
+    const snakeHead = ecs.createEntity();
+    snakeHead.add( new PositionComponent( 0, 10 ) );
+    ecs.addEntity( snakeHead );
+
+    const snakeTail = ecs.createEntity();
+    snakeTail.add( new PositionComponent( 1, 10 ) );
+    ecs.addEntity( snakeTail );
+
+    snakeHead.add( new LinkComponent( snakeTail.getId() ) );
+    snakeTail.add( new LinkComponent( null, snakeHead.getId() ) );
+
+    const snake = ecs.createEntity();
+    snake.add( new SnakeComponent( snakeHead.getId(), snakeTail.getId() ) );
+    snake.add( new VelocityComponent( 1, 0 ) );
+    ecs.addEntity( snake );
 }
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -1,68 +1,46 @@
-import { System, SystemEntityType, EntityViewFactory } from './perform-ecs'
+import { Engine as ECS, IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent, VelocityComponent } from './PositionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents'
 
-export class SnakeMovementSystem extends System {
-
-    timeAccu: number = 0;
+export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     constructor() {
-        super();
+        const interval = 0.2;
+        super( Family.all( SnakeComponent, VelocityComponent ).get(), interval, /*, priority*/ );
     }
 
-    snakesView = EntityViewFactory.createView({
-        components: [ SnakeComponent, VelocityComponent ]
-    });
+    protected processEntity( entity: Entity ): void {
 
-    snakeSegmentsView = EntityViewFactory.createView({
-        components: [ PositionComponent, LinkComponent ],
+        // Move snake by removing tail and inserting it in front of current head.
 
-        onEntityAdded:   this.onEntityAdded.bind( this ),
-        onEntityRemoved: this.onEntityRemoved.bind( this ),        
-    });
+        const ecs = this.getEngine()!;
 
-    private _snakeSegmentsById: Map< number, SystemEntityType< this, "snakeSegmentsView" > > = new Map();
+        const snake    = entity.get( SnakeComponent )!;
+        const velocity = entity.get( VelocityComponent )!;
 
-    onEntityAdded( entity: SystemEntityType< this, "snakeSegmentsView" > ): void {
+        const head     = ecs.getEntity( snake.headId )!;
+        const headLink = head.get( LinkComponent )!;
+        const headPos  = head.get( PositionComponent )!;
 
-        console.log( `onEntityAdded: ${entity.id}` );
-        this._snakeSegmentsById.set( entity.id, entity );
-    }
+        const tail     = ecs.getEntity( snake.tailId )!;
+        const tailLink = tail.get( LinkComponent )!;
 
-    onEntityRemoved( entity: SystemEntityType< this, "snakeSegmentsView" > ): void {
+        const newTail      = ecs.getEntity( tailLink.nextId! )!;
+        const newTailLink  = newTail!.get( LinkComponent )!;
+        newTailLink.prevId = null;
 
-        this._snakeSegmentsById.delete( entity.id );
-    }
-    
-    update( delta: number ): void {     
+        const newHead = tail;
+        const newHeadLink = tailLink;
+        newHeadLink.nextId = null;
+        newHeadLink.prevId = head.getId();
 
-        const delay = 0.2;
+        headLink.nextId = newHead.getId();
+        
+        const newHeadPos = newHead.get( PositionComponent )!;
+        newHeadPos.x = headPos.x + velocity.x;
+        newHeadPos.y = headPos.y + velocity.y;
 
-        this.timeAccu += delta;
-        if( this.timeAccu < delay ) {
-            return;
-        }
-
-        this.timeAccu -= delay;
-
-
-        for( const entity of this.snakesView.entities ) {
-         
-            const head = this._snakeSegmentsById.get( entity.headId );
-            const tail = this._snakeSegmentsById.get( entity.tailId );
-
-            const newTail = this._snakeSegmentsById.get( tail.nextId );
-            newTail.prevId = null;
-
-            const newHead = tail;
-            newHead.nextId = null;
-            newHead.prevId = head;
-            newHead.x = head.x + entity.velocityX;
-            newHead.y = head.y + entity.velocityY;
-
-            entity.tailId = newTail.id;
-            entity.headId = newHead.id;
-        }
+        snake.tailId = newTail.getId();
+        snake.headId = newHead.getId();
     }
 }
-
