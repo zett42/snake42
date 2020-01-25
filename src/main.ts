@@ -7,6 +7,8 @@ function main() {
 
     const gameCanvas = document.getElementById( 'gameCanvas' ) as HTMLCanvasElement;
 
+    wutil.resizeCanvasPixelBufferToWindowSize( gameCanvas )
+        
     wireUpEventListeners( gameCanvas );
 
     startGame( gameCanvas );

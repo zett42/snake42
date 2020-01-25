@@ -1,5 +1,5 @@
 import { System, SystemEntityType, EntityViewFactory } from './perform-ecs'
-import { PositionComp } from './components'
+import { PositionComp } from './FoodComponents'
 
 export class PositionSystem extends System {
 
