@@ -2,6 +2,7 @@ import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
 import { PositionComponent, DirectionComponent } from './PositionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents'
+import { setEntityPosition } from './setEntityPosition'
 import { SnakeControlSystem } from './SnakeControlSystem'
 import { SnakeMovementSystem } from './SnakeMovementSystem'
 import { SnakeRenderSystem } from './SnakeRenderSystem'
@@ -18,10 +19,10 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     const ctx = <CanvasRenderingContext2D> gameCanvas.getContext( '2d' );
 
-    createSnake( ecs );
+    createSnake( ecs, playField, cols / 2, rows / 2 );
 
     ecs.addSystem( new SnakeControlSystem() );
-    ecs.addSystem( new SnakeMovementSystem() );
+    ecs.addSystem( new SnakeMovementSystem( playField ) );
     ecs.addSystem( new SnakeRenderSystem( ctx, cols, rows ) );
 
     gameLoop( ctx, ecs );
@@ -29,22 +30,34 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
 //-------------------------------------------------------------------------------------------------------------------
 
-function createSnake( ecs: ECS ) {
+function createSnake( ecs: ECS, playField: PlayField, x: number, y: number ) {
+
+    let dirX = 0, dirY = 0;
+
+    switch( Math.round( Math.random() * 3 ) ) {
+        case 0: dirX =  1; break;
+        case 1: dirX = -1; break;
+        case 2: dirY =  1; break;
+        case 3: dirY = -1; break;
+    }
 
     const snakeHead = ecs.createEntity();
-    snakeHead.add( new PositionComponent( 0, 10 ) );
+    snakeHead.add( new PositionComponent );
     ecs.addEntity( snakeHead );
 
     const snakeTail = ecs.createEntity();
-    snakeTail.add( new PositionComponent( 1, 10 ) );
+    snakeTail.add( new PositionComponent );
     ecs.addEntity( snakeTail );
 
     snakeHead.add( new LinkComponent( snakeTail.getId() ) );
     snakeTail.add( new LinkComponent( null, snakeHead.getId() ) );
 
+    setEntityPosition( playField, snakeHead, x, y );
+    setEntityPosition( playField, snakeTail, x + dirX, y + dirY );
+
     const snake = ecs.createEntity();
     snake.add( new SnakeComponent( snakeHead.getId(), snakeTail.getId() ) );
-    snake.add( new DirectionComponent( 1, 0 ) );
+    snake.add( new DirectionComponent( dirX, dirY ) );
     ecs.addEntity( snake );
 }
 
