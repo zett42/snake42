@@ -1,8 +1,10 @@
-import { Engine as ECS, IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent, DirectionComponent } from './PositionComponent'
+import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
+import { PositionComponent } from './PositionComponent'
+import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from './DirectionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents'
 import { setEntityPosition } from './setEntityPosition'
 import { PlayField } from './PlayField'
+import { IVec2 } from './Vector'
 
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
@@ -12,12 +14,14 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     protected processEntity( entity: Entity ): void {
 
-        // Move snake by removing tail and inserting it in front of current head.
+        // Move snake by removing tail and inserting it in front of current head, incrementing position
+        // based on DirectionComponent.
 
         const ecs = this.getEngine()!;
 
-        const snake     = entity.get( SnakeComponent )!;
+        const snake = entity.get( SnakeComponent )!;
         const direction = entity.get( DirectionComponent )!;
+        const requestedDirection = entity.get( RequestedDirectionComponent )!;
 
         const head     = ecs.getEntity( snake.headId )!;
         const headLink = head.get( LinkComponent )!;
@@ -40,6 +44,32 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         snake.tailId = newTail.getId();
         snake.headId = newHead.getId();
 
-        setEntityPosition( this._playField, newHead, headPos.x + direction.x, headPos.y + direction.y );
+        const directionVec = this.changeDirection( requestedDirection, direction );
+
+        setEntityPosition( this._playField, newHead, headPos.x + directionVec.x, headPos.y + directionVec.y );
+    }
+
+    private changeDirection( requestedDirection: RequestedDirectionComponent, direction: DirectionComponent ) : IVec2 {
+
+        switch (requestedDirection.value) {
+            case Direction.left:
+                if (direction.value != Direction.right)
+                    direction.value = requestedDirection.value
+                break
+            case Direction.right:
+                if (direction.value != Direction.left)
+                    direction.value = requestedDirection.value
+                break
+            case Direction.up:
+                if (direction.value != Direction.down)
+                    direction.value = requestedDirection.value
+                break
+            case Direction.down:
+                if (direction.value != Direction.up)
+                    direction.value = requestedDirection.value
+                break
+        }
+
+        return directionToVec2( direction.value )        
     }
 }

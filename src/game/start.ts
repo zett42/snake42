@@ -1,9 +1,10 @@
 import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
-import { PositionComponent, DirectionComponent } from './PositionComponent'
+import { PositionComponent } from './PositionComponent'
+import { DirectionComponent, RequestedDirectionComponent, directionToVec2, randomDirection } from './DirectionComponent'
 import { SnakeComponent, LinkComponent } from './SnakeComponents'
 import { setEntityPosition } from './setEntityPosition'
-import { SnakeControlSystem } from './SnakeControlSystem'
+import { SnakeInputSystem } from './SnakeInputSystem'
 import { SnakeMovementSystem } from './SnakeMovementSystem'
 import { SnakeRenderSystem } from './SnakeRenderSystem'
 
@@ -21,7 +22,7 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     createSnake( ecs, playField, cols / 2, rows / 2 );
 
-    ecs.addSystem( new SnakeControlSystem() );
+    ecs.addSystem( new SnakeInputSystem() );
     ecs.addSystem( new SnakeMovementSystem( playField ) );
     ecs.addSystem( new SnakeRenderSystem( ctx, cols, rows ) );
 
@@ -32,14 +33,8 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
 function createSnake( ecs: ECS, playField: PlayField, x: number, y: number ) {
 
-    let dirX = 0, dirY = 0;
-
-    switch( Math.round( Math.random() * 3 ) ) {
-        case 0: dirX =  1; break;
-        case 1: dirX = -1; break;
-        case 2: dirY =  1; break;
-        case 3: dirY = -1; break;
-    }
+    const direction    = randomDirection();
+    const directionVec = directionToVec2( direction );
 
     const snakeHead = ecs.createEntity();
     snakeHead.add( new PositionComponent );
@@ -53,11 +48,12 @@ function createSnake( ecs: ECS, playField: PlayField, x: number, y: number ) {
     snakeTail.add( new LinkComponent( null, snakeHead.getId() ) );
 
     setEntityPosition( playField, snakeHead, x, y );
-    setEntityPosition( playField, snakeTail, x + dirX, y + dirY );
+    setEntityPosition( playField, snakeTail, x + directionVec.x, y + directionVec.y );
 
     const snake = ecs.createEntity();
     snake.add( new SnakeComponent( snakeHead.getId(), snakeTail.getId() ) );
-    snake.add( new DirectionComponent( dirX, dirY ) );
+    snake.add( new DirectionComponent( direction ) );
+    snake.add( new RequestedDirectionComponent );
     ecs.addEntity( snake );
 }
 
@@ -73,8 +69,7 @@ function gameLoop( ctx: CanvasRenderingContext2D, ecs: ECS, lastTime: number = 0
 
         ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
 
-        // System 'update' methods will be called
-        ecs.update( deltaTime );
+        ecs.update( deltaTime );  // Update all systems
     }
 
 	requestAnimationFrame( () => gameLoop( ctx, ecs, time ) );
