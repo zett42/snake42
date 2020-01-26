@@ -33,13 +33,12 @@ export class FoodDispenserSystem extends IntervalSystem {
             const entity = ecs.createEntity();
             entity.add( new PositionComponent );
             entity.add( new NutritionComponent( Math.trunc( 1 + Math.random() * 5 ) ) );
+            ecs.addEntity( entity );
 
             // TODO: find empty playfield cell
             const x = Math.trunc( Math.random() * this._playField.width );
             const y = Math.trunc( Math.random() * this._playField.height );
             setEntityPosition( this._playField, entity, { x: x, y: y } );
-
-            ecs.addEntity( entity );
         }
 	}
 }

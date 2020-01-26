@@ -6,6 +6,7 @@ import { SnakeMovementSystem } from './systems/SnakeMovementSystem'
 import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
 import { FoodDispenserSystem } from './systems/FoodDispenserSystem'
 import { FoodRenderSystem } from './systems/FoodRenderSystem'
+import { SnakeEatingSystem } from './systems/SnakeEatingSystem';
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
     ecs.addSystem( new SnakeInputSystem() );
     ecs.addSystem( new SnakeMovementSystem( playField ) );
     ecs.addSystem( new FoodDispenserSystem( playField ) );
+    ecs.addSystem( new SnakeEatingSystem( playField ) );
     ecs.addSystem( new FoodRenderSystem( ctx, playField ) );
     ecs.addSystem( new SnakeRenderSystem( ctx, playField ) );
 
