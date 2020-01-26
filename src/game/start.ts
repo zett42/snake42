@@ -1,12 +1,12 @@
 import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
-import { PositionComponent } from './PositionComponent'
-import { DirectionComponent, RequestedDirectionComponent, directionToVec2, randomDirection } from './DirectionComponent'
-import { SnakeComponent, LinkComponent } from './SnakeComponents'
+import { PositionComponent } from './components/PositionComponent'
+import { DirectionComponent, RequestedDirectionComponent, directionToVec2, randomDirection } from './components/DirectionComponent'
+import { SnakeComponent, LinkComponent } from './components/SnakeComponents'
 import { setEntityPosition } from './setEntityPosition'
-import { SnakeInputSystem } from './SnakeInputSystem'
-import { SnakeMovementSystem } from './SnakeMovementSystem'
-import { SnakeRenderSystem } from './SnakeRenderSystem'
+import { SnakeInputSystem } from './systems/SnakeInputSystem'
+import { SnakeMovementSystem } from './systems/SnakeMovementSystem'
+import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -30,6 +30,7 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 }
 
 //-------------------------------------------------------------------------------------------------------------------
+// Create initial snake consisting of 2 segments (head and tail).
 
 function createSnake( ecs: ECS, playField: PlayField, x: number, y: number ) {
 

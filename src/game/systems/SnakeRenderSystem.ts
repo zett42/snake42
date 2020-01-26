@@ -1,6 +1,6 @@
 import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent } from './PositionComponent'
-import { LinkComponent } from './SnakeComponents'
+import { PositionComponent } from '../components/PositionComponent'
+import { LinkComponent } from '../components/SnakeComponents'
 
 export class SnakeRenderSystem extends IteratingSystem {
 

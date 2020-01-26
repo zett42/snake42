@@ -1,5 +1,5 @@
 import { Entity } from 'typed-ecstasy'
-import { PositionComponent } from './PositionComponent'
+import { PositionComponent } from './components/PositionComponent'
 import { PlayField } from './PlayField'
 
 export function setEntityPosition( playField: PlayField, entity: Entity, x: number, y: number ) {

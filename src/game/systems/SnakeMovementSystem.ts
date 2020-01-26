@@ -1,10 +1,10 @@
 import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent } from './PositionComponent'
-import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from './DirectionComponent'
-import { SnakeComponent, LinkComponent } from './SnakeComponents'
-import { setEntityPosition } from './setEntityPosition'
-import { PlayField } from './PlayField'
-import { IVec2 } from './Vector'
+import { PositionComponent } from '../components/PositionComponent'
+import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from '../components/DirectionComponent'
+import { SnakeComponent, LinkComponent } from '../components/SnakeComponents'
+import { setEntityPosition } from '../setEntityPosition'
+import { PlayField } from '../PlayField'
+import { IVec2 } from '../Vector'
 
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 

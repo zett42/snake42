@@ -1,6 +1,6 @@
 import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { Direction, RequestedDirectionComponent } from './DirectionComponent'
-import { SnakeComponent } from './SnakeComponents'
+import { Direction, RequestedDirectionComponent } from '../components/DirectionComponent'
+import { SnakeComponent } from '../components/SnakeComponents'
 
 export class SnakeInputSystem extends IteratingSystem {
 

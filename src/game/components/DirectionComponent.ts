@@ -1,5 +1,5 @@
 import { Component } from 'typed-ecstasy'
-import { IVec2 } from './Vector'
+import { IVec2 } from '../Vector'
 
 export enum Direction {
     none, right, left, up, down
