@@ -49,27 +49,27 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         setEntityPosition( this._playField, newHead, headPos.x + directionVec.x, headPos.y + directionVec.y );
     }
 
-    private changeDirection( requestedDirection: RequestedDirectionComponent, direction: DirectionComponent ) : IVec2 {
+    private changeDirection( requestedDirection: RequestedDirectionComponent, direction: DirectionComponent ): IVec2 {
 
-        switch (requestedDirection.value) {
+        switch( requestedDirection.value ) {
             case Direction.left:
-                if (direction.value != Direction.right)
-                    direction.value = requestedDirection.value
-                break
+                if( direction.value != Direction.right )
+                    direction.value = requestedDirection.value;
+                break;
             case Direction.right:
-                if (direction.value != Direction.left)
-                    direction.value = requestedDirection.value
-                break
+                if( direction.value != Direction.left )
+                    direction.value = requestedDirection.value;
+                break;
             case Direction.up:
-                if (direction.value != Direction.down)
-                    direction.value = requestedDirection.value
-                break
+                if( direction.value != Direction.down )
+                    direction.value = requestedDirection.value;
+                break;
             case Direction.down:
-                if (direction.value != Direction.up)
-                    direction.value = requestedDirection.value
-                break
+                if( direction.value != Direction.up )
+                    direction.value = requestedDirection.value;
+                break;
         }
 
-        return directionToVec2( direction.value )        
+        return directionToVec2( direction.value );
     }
 }
