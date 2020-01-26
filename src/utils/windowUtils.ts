@@ -1,8 +1,11 @@
+/**
+ * Resize canvas pixel buffer to fit the CSS size of the element.
+ * @param canvas 
+ */
+export function resizeCanvasPixelBuffer( canvas: HTMLCanvasElement ){
 
-export function resizeCanvasPixelBufferToWindowSize( canvas: HTMLCanvasElement ){
-
-	canvas.width  = Math.round( window.innerWidth  * window.devicePixelRatio );
-	canvas.height = Math.round( window.innerHeight * window.devicePixelRatio );
+	canvas.width  = Math.round( canvas.clientWidth  * window.devicePixelRatio );
+	canvas.height = Math.round( canvas.clientHeight * window.devicePixelRatio );
 }
 
 //···················································································································

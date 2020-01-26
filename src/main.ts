@@ -7,7 +7,7 @@ function main() {
 
     const gameCanvas = document.getElementById( 'gameCanvas' ) as HTMLCanvasElement;
 
-    wutil.resizeCanvasPixelBufferToWindowSize( gameCanvas )
+    wutil.resizeCanvasPixelBuffer( gameCanvas );
         
     wireUpEventListeners( gameCanvas );
 
@@ -20,7 +20,7 @@ function wireUpEventListeners( gameCanvas : HTMLCanvasElement ) {
     
     // On window resize, resize the canvas to fill browser window dynamically.
     // Use debounce() to avoid costly calculations while the window size is in flux.
-    window.addEventListener( "resize", () => wutil.resizeCanvasPixelBufferToWindowSize( gameCanvas ) );
+    window.addEventListener( "resize", () => wutil.resizeCanvasPixelBuffer( gameCanvas ) );
 
     // Handle keyboard
     //document.addEventListener( "keydown", onKeyDown );

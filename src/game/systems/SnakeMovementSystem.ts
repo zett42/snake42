@@ -31,7 +31,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         const tailLink = tail.get( LinkComponent )!;
 
         const newTail      = ecs.getEntity( tailLink.nextId! )!;
-        const newTailLink  = newTail!.get( LinkComponent )!;
+        const newTailLink  = newTail.get( LinkComponent )!;
         newTailLink.prevId = null;
 
         const newHead      = tail;

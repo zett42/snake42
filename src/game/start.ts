@@ -11,7 +11,9 @@ import { FoodRenderSystem } from './systems/FoodRenderSystem'
 
 export function startGame( gameCanvas : HTMLCanvasElement ) {
 
-    const playField = new PlayField( 80, 45 );
+    const aspectRatio = gameCanvas.clientWidth / gameCanvas.clientHeight;
+    const playFieldWidth = 96; // should be divisable by aspectRatio
+    const playField = new PlayField( playFieldWidth, playFieldWidth / aspectRatio );
 
     const ecs = new ECS();
 

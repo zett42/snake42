@@ -6,9 +6,15 @@ export interface PlayFieldCell {
 
 export class PlayField {
 
-    constructor( public readonly width: number, public readonly height: number ) {
+    public readonly width: number;
+    public readonly height: number;
 
-        let size = width * height;
+    constructor( width: number, height: number ) {
+
+        this.width  = Math.trunc( width );
+        this.height = Math.trunc( height );
+
+        let size = this.width * this.height;
         this._data = new Array< PlayFieldCell >( size );
         while( size-- ) {
             this._data[ size ] = { entityIds: [] };

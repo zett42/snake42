@@ -8,11 +8,15 @@ html, body {
 	color: #fff;
 }
 
+body{
+	display: flex;
+	align-items: center;
+	min-height: 100vh;
+}
+
 #gameCanvas {
-	padding: 0;
-	width: 100%; 
-	height: 100%; 
-	position: absolute;
-	display: block;  /* To remove the scrollbars */
+	width: 100%;
+	height: 56.25vw;   /* Aspect Ratio 16:9 */
+	display: block;
 	background: rgb(62, 67, 104);
 }
