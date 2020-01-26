@@ -1,15 +1,14 @@
 import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { Direction, RequestedDirectionComponent } from '../components/DirectionComponent'
-import { SnakeComponent } from '../components/SnakeComponents'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class SnakeInputSystem extends IteratingSystem {
+export class MovementInputSystem extends IteratingSystem {
 
     private _inputDirection: Direction = Direction.none;
 
     constructor() {
-        super( Family.all( SnakeComponent, RequestedDirectionComponent ).get() /*, priority*/ );
+        super( Family.all( RequestedDirectionComponent ).get() /*, priority*/ );
      
         document.addEventListener( "keydown", ( event: KeyboardEvent ) => {
 

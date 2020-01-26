@@ -1,9 +1,10 @@
 import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from '../components/DirectionComponent'
-import { SnakeComponent, LinkComponent } from '../components/SnakeComponents'
-import { FeedableComponent } from '../components/FeedableComponent';
-import { createSnakeSegment } from '../factories/SnakeFactory';
+import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
+import { DoubleLinkComponent, insertEntityInDoubleLinkedList, removeLastEntityFromDoubleLinkedList } from '../components/DoubleLinkComponent'
+import { FeedableComponent } from '../components/FeedableComponent'
+import { createSnakeSegment } from '../factories/SnakeFactory'
 import { setEntityPosition } from '../common/SetEntityPosition'
 import { PlayField } from '../common/PlayField'
 import { IVec2, vec2add } from '../common/Vector'
@@ -13,7 +14,7 @@ import { IVec2, vec2add } from '../common/Vector'
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     constructor( private _playField: PlayField, private _interval = 0.2 ) {
-        super( Family.all( SnakeComponent, DirectionComponent ).get(), _interval, /*, priority*/ );
+        super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(), _interval, /*, priority*/ );
     }
 
     //.................................................................................................................
@@ -25,59 +26,45 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
 
         const ecs = this.getEngine()!;
 
-        // Get snake components
-        const snake              = entity.get( SnakeComponent )!;
+        // Get snake head components
+        const headComp           = entity.get( SnakeHeadComponent )!;
+        const headPos            = entity.get( PositionComponent )!;
         const direction          = entity.get( DirectionComponent )!;
         const requestedDirection = entity.get( RequestedDirectionComponent )!;
         const feedable           = entity.get( FeedableComponent )!;
 
-        // Get head and tail entities
-        const head = ecs.getEntity( snake.headId )!;
-        const tail = ecs.getEntity( snake.tailId )!;
-
-          // Get head components
-        const headLink = head.get( LinkComponent )!;
-        const headPos  = head.get( PositionComponent )!;
-
-        // Get tail components
-        const tailLink = tail.get( LinkComponent )!;
-
-        let newHead: Entity;
+        let newSegment: Entity;
 
         if( feedable.stomach > 0 ) {
-            // Snake is currently digesting -> insert a completely new head.
+            // Snake has eaten something -> insert a new segment.
 
-            newHead = createSnakeSegment( ecs, this._playField, null, head.getId() );
-            ecs.addEntity( newHead );
+            newSegment = createSnakeSegment( ecs, this._playField );
+            ecs.addEntity( newSegment );
 
             --feedable.stomach;
         }
         else {
-            // Snake is not digesting -> keep its length by making a new head from the current tail.
+            // Snake has not eaten -> keep its length, just move the current tail behind the head.
 
-            // Define new tail by setting prevId to null.
-            const newTail = ecs.getEntity( tailLink.nextId! )!;
-            newTail.get( LinkComponent )!.prevId = null;
+            const currentTail = ecs.getEntity( headComp.tailId )!;
 
-            // Turn old tail into new head.
-            newHead            = tail;
-            const newHeadLink  = tailLink;
-            newHeadLink.nextId = null;
-            newHeadLink.prevId = head.getId();
+            const newTail = removeLastEntityFromDoubleLinkedList( ecs, currentTail )!;
 
-            // Let the snake know about the new tail.
-            snake.tailId = newTail.getId();
+            // Make head point to new tail.
+            headComp.tailId = newTail.getId();
+
+            newSegment = currentTail;
         }
 
-        // Let old head point to new head
-        headLink.nextId = newHead.getId();
+        // Insert new segment behind head.
+        insertEntityInDoubleLinkedList( ecs, newSegment, entity );
 
-        // Let the snake know about the new head.
-        snake.headId = newHead.getId();
+        // Set position of new segment.
+        setEntityPosition( this._playField, newSegment, headPos );
 
+        // Update position of head.
         const directionVec = this.changeDirection( requestedDirection, direction );
-
-        setEntityPosition( this._playField, newHead, vec2add( headPos, directionVec ) );
+        setEntityPosition( this._playField, entity, vec2add( headPos, directionVec ) );
     }
 
     //.................................................................................................................

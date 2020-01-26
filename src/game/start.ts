@@ -1,12 +1,12 @@
 import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './common/PlayField'
-import { createSnake } from './factories/SnakeFactory'
-import { SnakeInputSystem } from './systems/SnakeInputSystem'
+import { createAndAddSnake } from './factories/SnakeFactory'
+import { MovementInputSystem } from './systems/MovementInputSystem'
 import { SnakeMovementSystem } from './systems/SnakeMovementSystem'
 import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
 import { FoodDispenserSystem } from './systems/FoodDispenserSystem'
 import { FoodRenderSystem } from './systems/FoodRenderSystem'
-import { SnakeEatingSystem } from './systems/SnakeEatingSystem';
+import { EatingSystem } from './systems/EatingSystem';
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -20,12 +20,12 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     const ctx = <CanvasRenderingContext2D> gameCanvas.getContext( '2d' );
 
-    ecs.addEntity( createSnake( ecs, playField, { x: playField.width / 2, y: playField.height / 2} ) );
+    createAndAddSnake( ecs, playField, { x: playField.width / 2, y: playField.height / 2} );
 
-    ecs.addSystem( new SnakeInputSystem() );
+    ecs.addSystem( new MovementInputSystem() );
     ecs.addSystem( new SnakeMovementSystem( playField ) );
     ecs.addSystem( new FoodDispenserSystem( playField ) );
-    ecs.addSystem( new SnakeEatingSystem( playField ) );
+    ecs.addSystem( new EatingSystem( playField ) );
     ecs.addSystem( new FoodRenderSystem( ctx, playField ) );
     ecs.addSystem( new SnakeRenderSystem( ctx, playField ) );
 

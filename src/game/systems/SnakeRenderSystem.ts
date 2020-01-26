@@ -1,6 +1,6 @@
 import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
-import { LinkComponent } from '../components/SnakeComponents'
+import { DoubleLinkComponent } from '../components/DoubleLinkComponent'
 import { ISize } from '../common/Vector'
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ import { ISize } from '../common/Vector'
 export class SnakeRenderSystem extends IteratingSystem {
 
     constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize ) {
-        super( Family.all( PositionComponent, LinkComponent ).get() /*, priority*/ );
+        super( Family.all( PositionComponent, DoubleLinkComponent ).get() /*, priority*/ );
     }
 
     protected processEntity( entity: Entity, deltaTime: number ): void {
