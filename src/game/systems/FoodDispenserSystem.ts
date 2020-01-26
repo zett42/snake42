@@ -1,8 +1,8 @@
 import { Engine as ECS, IntervalSystem , Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { NutritionComponent } from '../components/FoodComponents'
-import { setEntityPosition } from '../setEntityPosition'
-import { PlayField } from '../PlayField'
+import { setEntityPosition } from '../common/SetEntityPosition'
+import { PlayField } from '../common/PlayField'
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ export class FoodDispenserSystem extends IntervalSystem {
         this._foodEntities = engine.getEntitiesFor( Family.all( NutritionComponent ).get() );
 
         this.updateInterval();
-	}    
+	}
 
     protected updateInterval(): void {
       
@@ -37,7 +37,7 @@ export class FoodDispenserSystem extends IntervalSystem {
             // TODO: find empty playfield cell
             const x = Math.trunc( Math.random() * this._playField.width );
             const y = Math.trunc( Math.random() * this._playField.height );
-            setEntityPosition( this._playField, entity, x, y );
+            setEntityPosition( this._playField, entity, { x: x, y: y } );
 
             ecs.addEntity( entity );
         }

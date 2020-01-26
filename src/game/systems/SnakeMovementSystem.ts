@@ -4,9 +4,9 @@ import { DirectionComponent, Direction, RequestedDirectionComponent, directionTo
 import { SnakeComponent, LinkComponent } from '../components/SnakeComponents'
 import { FeedableComponent } from '../components/FeedableComponent';
 import { createSnakeSegment } from '../factories/SnakeFactory';
-import { setEntityPosition } from '../setEntityPosition'
-import { PlayField } from '../PlayField'
-import { IVec2 } from '../Vector'
+import { setEntityPosition } from '../common/SetEntityPosition'
+import { PlayField } from '../common/PlayField'
+import { IVec2, vec2add } from '../common/Vector'
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
 
         const directionVec = this.changeDirection( requestedDirection, direction );
 
-        setEntityPosition( this._playField, newHead, headPos.x + directionVec.x, headPos.y + directionVec.y );
+        setEntityPosition( this._playField, newHead, vec2add( headPos, directionVec ) );
     }
 
     //.................................................................................................................

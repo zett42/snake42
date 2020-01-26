@@ -1,5 +1,5 @@
 import { Engine as ECS } from 'typed-ecstasy'
-import { PlayField } from './PlayField'
+import { PlayField } from './common/PlayField'
 import { createSnake } from './factories/SnakeFactory'
 import { SnakeInputSystem } from './systems/SnakeInputSystem'
 import { SnakeMovementSystem } from './systems/SnakeMovementSystem'

@@ -21,14 +21,14 @@ export class PlayField {
         }
     }
 
-    getCell( x: number, y: number ): PlayFieldCell {
+    getCell( pos: IVec2 ): PlayFieldCell {
 
-        return this._data[ this.width * y + x ];
+        return this._data[ this.width * pos.y + pos.x ];
     }
 
-    insertEntity( x: number, y: number, id: number ) {
+    insertEntity( pos: IVec2, id: number ) {
 
-        const cell = this.getCell( x, y );  
+        const cell = this.getCell( pos );  
 
         if( ! cell.entityIds.includes( id ) ) {
 
@@ -40,9 +40,9 @@ export class PlayField {
         }
     }
 
-    removeEntity( x: number, y: number, id: number ) {
+    removeEntity( pos: IVec2, id: number ) {
 
-        const cell = this.getCell( x, y );
+        const cell = this.getCell( pos );
 
         const index = cell.entityIds.indexOf( id );
         if( index >= 0 ) {

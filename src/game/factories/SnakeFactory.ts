@@ -3,9 +3,9 @@ import { SnakeComponent, LinkComponent } from '../components/SnakeComponents'
 import { PositionComponent } from '../components/PositionComponent'
 import { DirectionComponent, RequestedDirectionComponent, Direction, directionToVec2, randomDirection } from '../components/DirectionComponent'
 import { FeedableComponent } from '../components/FeedableComponent'
-import { setEntityPosition } from '../setEntityPosition'
-import { PlayField } from '../PlayField'
-import { IVec2 } from '../Vector';
+import { setEntityPosition } from '../common/SetEntityPosition'
+import { PlayField } from '../common/PlayField'
+import { IVec2 } from '../common/Vector';
 
 //--------------------------------------------------------------------------------------------------------
 /**
@@ -46,7 +46,7 @@ export function createSnakeSegment(
     segment.add( new LinkComponent( prevId, nextId ) );
 
     if( position !== null ) {
-        setEntityPosition( playField, segment, position.x, position.y );
+        setEntityPosition( playField, segment, position );
     }
 
     return segment;

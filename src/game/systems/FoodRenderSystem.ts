@@ -1,7 +1,7 @@
 import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { NutritionComponent } from '../components/FoodComponents'
-import { ISize } from '../Vector'
+import { ISize } from '../common/Vector'
 
 //---------------------------------------------------------------------------------------------------------------------
 
