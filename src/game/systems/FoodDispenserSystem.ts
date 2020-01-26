@@ -4,11 +4,13 @@ import { NutritionComponent } from '../components/FoodComponents'
 import { setEntityPosition } from '../setEntityPosition'
 import { PlayField } from '../PlayField'
 
+//---------------------------------------------------------------------------------------------------------------------
+
 export class FoodDispenserSystem extends IntervalSystem {
 
     private _foodEntities: Entity[] = [];
      
-    constructor( private _playField: PlayField, interval: number = 1.0 ) {
+    constructor( private _playField: PlayField, private _foodCount: number = 100, interval: number = 1.0 ) {
         super( interval );
     }
 
@@ -16,19 +18,21 @@ export class FoodDispenserSystem extends IntervalSystem {
 
         super.addedToEngine( engine );
 
-        this._foodEntities = engine.getEntitiesFor( Family.all( NutritionComponent ).get() )
+        this._foodEntities = engine.getEntitiesFor( Family.all( NutritionComponent ).get() );
+
+        this.updateInterval();
 	}    
 
     protected updateInterval(): void {
       
-        let missingEntityCount = 10 - this._foodEntities.length; 
-        if( missingEntityCount > 0 ) {
+        let missingEntityCount = this._foodCount - this._foodEntities.length; 
+        while( missingEntityCount-- > 0 ) {
 
             const ecs = this.getEngine()!;
 
             const entity = ecs.createEntity();
             entity.add( new PositionComponent );
-            entity.add( new NutritionComponent );
+            entity.add( new NutritionComponent( Math.trunc( 1 + Math.random() * 5 ) ) );
 
             // TODO: find empty playfield cell
             const x = Math.trunc( Math.random() * this._playField.width );

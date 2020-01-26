@@ -3,6 +3,8 @@ import { PositionComponent } from '../components/PositionComponent'
 import { LinkComponent } from '../components/SnakeComponents'
 import { ISize } from '../Vector'
 
+//---------------------------------------------------------------------------------------------------------------------
+
 export class SnakeRenderSystem extends IteratingSystem {
 
     constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize ) {
@@ -18,7 +20,7 @@ export class SnakeRenderSystem extends IteratingSystem {
         const w = this._ctx.canvas.width  / this._playField.width;
         const h = this._ctx.canvas.height / this._playField.height;
 
-        const scale = 0.5;
+        const scale = 0.6;
 
         this._ctx.beginPath();
         this._ctx.ellipse( x, y, w * scale, h * scale, 0, 0, Math.PI * 2 );
