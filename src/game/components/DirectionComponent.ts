@@ -33,5 +33,5 @@ export function directionToVec2( dir: Direction ): IVec2 {
 } 
 
 export function randomDirection() : Direction {
-    return <Direction> Math.round( Math.random() * 3 );
+    return <Direction> Math.trunc( 1 + Math.random() * 4 );
 }

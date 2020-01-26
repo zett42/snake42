@@ -4,6 +4,9 @@ import { PlayField } from './PlayField'
 
 export function setEntityPosition( playField: PlayField, entity: Entity, x: number, y: number ) {
         
+    x = Math.trunc( x );
+    y = Math.trunc( y );
+
     const pos = entity.get( PositionComponent );
     if( ! pos ) {
         throw new Error( "Entity cannot be inserted in playfield because it does not contain PositionComponent" );
