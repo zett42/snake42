@@ -1,6 +1,6 @@
 import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './PlayField'
-import { createSnake } from './components/SnakeComponents'
+import { createSnake } from './factories/SnakeFactory'
 import { SnakeInputSystem } from './systems/SnakeInputSystem'
 import { SnakeMovementSystem } from './systems/SnakeMovementSystem'
 import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
@@ -19,7 +19,7 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     const ctx = <CanvasRenderingContext2D> gameCanvas.getContext( '2d' );
 
-    ecs.addEntity( createSnake( ecs, playField, playField.width / 2, playField.height / 2 ) );
+    ecs.addEntity( createSnake( ecs, playField, { x: playField.width / 2, y: playField.height / 2} ) );
 
     ecs.addSystem( new SnakeInputSystem() );
     ecs.addSystem( new SnakeMovementSystem( playField ) );

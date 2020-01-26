@@ -2,15 +2,21 @@ import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from '../components/DirectionComponent'
 import { SnakeComponent, LinkComponent } from '../components/SnakeComponents'
+import { FeedableComponent } from '../components/FeedableComponent';
+import { createSnakeSegment } from '../factories/SnakeFactory';
 import { setEntityPosition } from '../setEntityPosition'
 import { PlayField } from '../PlayField'
 import { IVec2 } from '../Vector'
+
+//---------------------------------------------------------------------------------------------------------------------
 
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     constructor( private _playField: PlayField, private _interval = 0.2 ) {
         super( Family.all( SnakeComponent, DirectionComponent ).get(), _interval, /*, priority*/ );
     }
+
+    //.................................................................................................................
 
     protected processEntity( entity: Entity ): void {
 
@@ -19,35 +25,62 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
 
         const ecs = this.getEngine()!;
 
-        const snake = entity.get( SnakeComponent )!;
-        const direction = entity.get( DirectionComponent )!;
+        // Get snake components
+        const snake              = entity.get( SnakeComponent )!;
+        const direction          = entity.get( DirectionComponent )!;
         const requestedDirection = entity.get( RequestedDirectionComponent )!;
+        const feedable           = entity.get( FeedableComponent )!;
 
-        const head     = ecs.getEntity( snake.headId )!;
+        // Get head and tail entities
+        const head = ecs.getEntity( snake.headId )!;
+        const tail = ecs.getEntity( snake.tailId )!;
+
+          // Get head components
         const headLink = head.get( LinkComponent )!;
         const headPos  = head.get( PositionComponent )!;
 
-        const tail     = ecs.getEntity( snake.tailId )!;
+        // Get tail components
         const tailLink = tail.get( LinkComponent )!;
 
-        const newTail      = ecs.getEntity( tailLink.nextId! )!;
-        const newTailLink  = newTail.get( LinkComponent )!;
-        newTailLink.prevId = null;
+        let newHead: Entity;
 
-        const newHead      = tail;
-        const newHeadLink  = tailLink;
-        newHeadLink.nextId = null;
-        newHeadLink.prevId = head.getId();
+        if( feedable.stomach > 0 ) {
+            // Snake is currently digesting -> insert a completely new head.
 
+            newHead = createSnakeSegment( ecs, this._playField, null, head.getId() );
+            ecs.addEntity( newHead );
+
+            --feedable.stomach;
+        }
+        else {
+            // Snake is not digesting -> keep its length by making a new head from the current tail.
+
+            // Define new tail by setting prevId to null.
+            const newTail = ecs.getEntity( tailLink.nextId! )!;
+            newTail.get( LinkComponent )!.prevId = null;
+
+            // Turn old tail into new head.
+            newHead            = tail;
+            const newHeadLink  = tailLink;
+            newHeadLink.nextId = null;
+            newHeadLink.prevId = head.getId();
+
+            // Let the snake know about the new tail.
+            snake.tailId = newTail.getId();
+        }
+
+        // Let old head point to new head
         headLink.nextId = newHead.getId();
-        
-        snake.tailId = newTail.getId();
+
+        // Let the snake know about the new head.
         snake.headId = newHead.getId();
 
         const directionVec = this.changeDirection( requestedDirection, direction );
 
         setEntityPosition( this._playField, newHead, headPos.x + directionVec.x, headPos.y + directionVec.y );
     }
+
+    //.................................................................................................................
 
     private changeDirection( requestedDirection: RequestedDirectionComponent, direction: DirectionComponent ): IVec2 {
 
