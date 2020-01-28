@@ -39,7 +39,6 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
             // Snake has eaten something -> insert a new segment.
 
             newSegment = createSnakeSegment( ecs, this._playField );
-            ecs.addEntity( newSegment );
 
             --feedable.stomach;
         }
@@ -59,7 +58,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         // Insert new segment behind head.
         insertEntityInDoubleLinkedList( ecs, newSegment, entity );
 
-        // Set position of new segment.
+        // Set position of new segment to current position of head.
         setEntityPosition( this._playField, newSegment, headPos );
 
         // Update position of head.

@@ -7,6 +7,9 @@ import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
 import { FoodDispenserSystem } from './systems/FoodDispenserSystem'
 import { FoodRenderSystem } from './systems/FoodRenderSystem'
 import { EatingSystem } from './systems/EatingSystem';
+import { ObstacleGeneratorSystem } from './systems/ObstacleGeneratorSystem';
+import { WallRenderSystem } from './systems/WallRenderSystem';
+import { CollisionSystem } from './systems/CollisionSystem';
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -22,11 +25,14 @@ export function startGame( gameCanvas : HTMLCanvasElement ) {
 
     createAndAddSnake( ecs, playField, { x: playField.width / 2, y: playField.height / 2} );
 
+    ecs.addSystem( new ObstacleGeneratorSystem( playField ) );
     ecs.addSystem( new MovementInputSystem() );
     ecs.addSystem( new SnakeMovementSystem( playField ) );
     ecs.addSystem( new FoodDispenserSystem( playField ) );
     ecs.addSystem( new EatingSystem( playField ) );
+    ecs.addSystem( new CollisionSystem( playField ) );
     ecs.addSystem( new FoodRenderSystem( ctx, playField ) );
+    ecs.addSystem( new WallRenderSystem( ctx, playField ) );
     ecs.addSystem( new SnakeRenderSystem( ctx, playField ) );
 
     gameLoop( ctx, ecs );

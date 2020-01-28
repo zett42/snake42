@@ -7,6 +7,7 @@ import { FeedableComponent } from '../components/FeedableComponent'
 import { setEntityPosition } from '../common/SetEntityPosition'
 import { PlayField } from '../common/PlayField'
 import { IVec2, vec2add, vec2sub } from '../common/Vector';
+import { ObstacleComponent } from '../components/ObstacleComponent';
 
 //--------------------------------------------------------------------------------------------------------
 /**
@@ -18,17 +19,10 @@ export function createAndAddSnake(
     const directionVec = directionToVec2( direction );
 
     const snakeTail = createSnakeSegment( ecs, playField, vec2sub( position, directionVec ) );
-    ecs.addEntity( snakeTail );
 
     const snakeMiddle = createSnakeSegment( ecs, playField, position );
-    ecs.addEntity( snakeMiddle );
 
-    const snakeHead = createSnakeSegment( ecs, playField, vec2add( position, directionVec ) );
-    snakeHead.add( new SnakeHeadComponent( snakeTail.getId() ) );
-    snakeHead.add( new DirectionComponent( direction ) );
-    snakeHead.add( new RequestedDirectionComponent );
-    snakeHead.add( new FeedableComponent );
-    ecs.addEntity( snakeHead );
+    const snakeHead = createSnakeHead( ecs, playField, vec2add( position, directionVec ), snakeTail, direction );
 
     appendEntityToDoubleLinkedList( snakeTail, snakeMiddle );
     appendEntityToDoubleLinkedList( snakeMiddle, snakeHead );
@@ -41,13 +35,40 @@ export function createAndAddSnake(
 export function createSnakeSegment(
     ecs: ECS, playField: PlayField, position: IVec2|null = null ): Entity {
 
-    const segment = ecs.createEntity();
-    segment.add( new PositionComponent );
-    segment.add( new DoubleLinkComponent );
+    const result = ecs.createEntity();
+    ecs.addEntity( result );
+
+    result.add( new PositionComponent );
+    result.add( new DoubleLinkComponent );
+    result.add( new ObstacleComponent );  // to detect collision with itself
 
     if( position !== null ) {
-        setEntityPosition( playField, segment, position );
+        setEntityPosition( playField, result, position );
     }
 
-    return segment;
+    return result;
+}
+
+//--------------------------------------------------------------------------------------------------------
+/**
+ * Create a snake head.
+ */
+export function createSnakeHead(
+    ecs: ECS, playField: PlayField, position: IVec2|null = null, snakeTail: Entity, direction: Direction ): Entity {
+
+    const result = ecs.createEntity();
+    ecs.addEntity( result );
+    
+    result.add( new PositionComponent );
+    result.add( new DoubleLinkComponent );
+    result.add( new SnakeHeadComponent( snakeTail.getId() ) );
+    result.add( new DirectionComponent( direction ) );
+    result.add( new RequestedDirectionComponent );
+    result.add( new FeedableComponent );
+
+    if( position !== null ) {
+        setEntityPosition( playField, result, position );
+    }
+
+    return result;
 }
