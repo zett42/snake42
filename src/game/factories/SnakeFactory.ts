@@ -36,11 +36,12 @@ export function createSnakeSegment(
     ecs: ECS, playField: PlayField, position: IVec2|null = null ): Entity {
 
     const result = ecs.createEntity();
-    ecs.addEntity( result );
 
     result.add( new PositionComponent );
     result.add( new DoubleLinkComponent );
     result.add( new ObstacleComponent );  // to detect collision with itself
+
+    ecs.addEntity( result );
 
     if( position !== null ) {
         setEntityPosition( playField, result, position );
@@ -57,7 +58,6 @@ export function createSnakeHead(
     ecs: ECS, playField: PlayField, position: IVec2|null = null, snakeTail: Entity, direction: Direction ): Entity {
 
     const result = ecs.createEntity();
-    ecs.addEntity( result );
     
     result.add( new PositionComponent );
     result.add( new DoubleLinkComponent );
@@ -65,6 +65,8 @@ export function createSnakeHead(
     result.add( new DirectionComponent( direction ) );
     result.add( new RequestedDirectionComponent );
     result.add( new FeedableComponent );
+
+    ecs.addEntity( result );
 
     if( position !== null ) {
         setEntityPosition( playField, result, position );
