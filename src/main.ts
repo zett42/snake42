@@ -1,5 +1,5 @@
 import * as wutil from './utils/windowUtils'
-import { startGame } from './game/start'
+import { startGame } from './game/startGame'
 import { GameLayerId, switchHtmlLayer, GameGui } from './game/common/GameGui';
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -33,7 +33,6 @@ function wireUpEventListeners( gameCanvas : HTMLCanvasElement, gui: GameGui ) {
     gameCanvas.addEventListener( "dblclick", wutil.toggleFullscreen )
 
     const switchToGameAndPlay = () => {
-
         if( switchHtmlLayer( gui, GameLayerId.Game ) ) {
             startGame( gameCanvas, gui )
         }
