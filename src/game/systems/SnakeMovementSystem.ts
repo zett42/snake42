@@ -27,7 +27,12 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         const ecs = this.getEngine()!;
 
         // Get snake head components
-        const headComp           = entity.get( SnakeHeadComponent )!;
+        
+        const headComp           = entity.get( SnakeHeadComponent )!;        
+        if( ! headComp.isAlive ) {
+            return;
+        }
+
         const headPos            = entity.get( PositionComponent )!;
         const direction          = entity.get( DirectionComponent )!;
         const requestedDirection = entity.get( RequestedDirectionComponent )!;

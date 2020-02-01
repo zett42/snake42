@@ -10,7 +10,24 @@
 </head>
 
 <body>
-    <canvas id="gameCanvas"></canvas>
+    <div id="main">
+        <div id="menuScreen" class="layer">
+            <div>
+                <h1>z42snake</h1>
+                <h2>Click to start game!</h2>
+                <p>Use arrow keys to control snake.</p>
+            </div>
+        </div>
+
+        <div id="gameOverScreen" class="layer hiddenLayer">
+            <div>
+                <h1>Game Over</h1>
+                <h2>Click to restart game!</h2>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" class="layer hiddenLayer"></canvas>
+    </div>
     <script src="dist/bundle.js"></script>
 </body>
 </html>

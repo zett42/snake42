@@ -6,7 +6,10 @@ import { Component } from 'typed-ecstasy'
  */
 export class SnakeHeadComponent extends Component {
 
-    constructor( public tailId = 0 ) {
+    constructor( 
+        public tailId: number = 0, 
+        public isAlive: boolean = true 
+    ){        
         super();
     }
 }

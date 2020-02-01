@@ -23,7 +23,10 @@ export class CollisionSystem extends IteratingSystem {
             
             const cellEntity = ecs.getEntity( cellEntityId )!;
             if( cellEntity.get( ObstacleComponent ) ) {
-                console.log( "GAME OVER" );
+                
+                const snakeHead = entity.get( SnakeHeadComponent )!;
+                snakeHead.isAlive = false;
+
                 break;
             }
         }

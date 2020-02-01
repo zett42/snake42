@@ -6,17 +6,56 @@ html, body {
 	overflow: hidden;
 	background: #000;
 	color: #fff;
+	user-select: none;
 }
 
-body{
+body {
 	display: flex;
-	align-items: center;
+	align-items: center;  /* vertically center children  */
 	min-height: 100vh;
+}
+
+#main {
+	width: 100%;
+	height: 56.25vw;      /* fix aspect ratio of 16:9 */	
+	display: grid;
+}
+
+.layer {
+	/* same grid cell for all layers to overlay them */
+	grid-column: 1;	grid-row: 1;	
+
+	/* center text vertically and horizontally */
+	display: flex; align-items: center;  
+	text-align: center;
+
+	color: white;
+	opacity: 1.0;
+	transition: opacity 500ms ease-in-out;
+}
+.layer > div {
+	width: 100%;
+}
+.layer h1 {
+	font-size: 50px;
+}
+.layer h2 {
+	font-size: 20px;
+}
+.hiddenLayer {
+	opacity: 0;
+}
+
+#menuScreen {
+	z-index: 1;
+}
+
+#gameOverScreen {
+	z-index: 2;
 }
 
 #gameCanvas {
 	width: 100%;
-	height: 56.25vw;   /* Aspect Ratio 16:9 */
-	display: block;
+	height: 100%;
 	background: rgb(62, 67, 104);
 }
