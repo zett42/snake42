@@ -16,7 +16,7 @@ import { GameGui, switchHtmlLayer, GameLayerId } from './common/GameGui'
 //-------------------------------------------------------------------------------------------------------------------
 
 interface IGameContext {
-    gameStatus: GameStatus
+    status: GameStatus
     ecs: ECS
     ctx: CanvasRenderingContext2D
     playField: PlayField
@@ -31,7 +31,7 @@ export function startGame( canvas : HTMLCanvasElement, gui: GameGui ) {
     const playFieldWidth = 96 // should be divisable by aspectRatio
 
     const game: IGameContext = { 
-        gameStatus: GameStatus.Playing,
+        status: GameStatus.Playing,
         ecs: new ECS(), 
         ctx: <CanvasRenderingContext2D> canvas.getContext( '2d' ), 
         playField: new PlayField( playFieldWidth, playFieldWidth / aspectRatio ),
@@ -58,7 +58,7 @@ export function startGame( canvas : HTMLCanvasElement, gui: GameGui ) {
 
 function gameLoop( game: IGameContext, lastTime: number = 0 ) {
 
-    if( game.gameStatus === GameStatus.GameOver ) {
+    if( game.status === GameStatus.GameOver ) {
 
         switchHtmlLayer( game.gui, GameLayerId.GameOver )
 

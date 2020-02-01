@@ -9,7 +9,7 @@ export enum GameStatus {
 }
 
 export interface IGameState {
-    gameStatus: GameStatus
+    status: GameStatus
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ export class GameStateSystem extends EntitySystem {
         const headsAlive = this._entities.filter( ( entity ) => entity.get( SnakeHeadComponent )!.isAlive )
 
         if( headsAlive.length === 0 ) {
-            this._state.gameStatus = GameStatus.GameOver
+            this._state.status = GameStatus.GameOver
         }
     }
 }
