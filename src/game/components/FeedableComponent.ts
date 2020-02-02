@@ -6,6 +6,6 @@ import { Component } from 'typed-ecstasy'
 export class FeedableComponent extends Component {
 
     constructor( public stomach: number = 0 ) {
-        super();
+        super()
     }
 }

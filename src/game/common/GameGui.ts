@@ -1,4 +1,4 @@
-import { LayeredHtmlElements, switchHtmlLayer } from './LayeredGui';
+import { LayeredHtmlElements, switchHtmlLayer } from './LayeredGui'
 
 export enum GameLayerId {
     Menu,
@@ -6,8 +6,8 @@ export enum GameLayerId {
     GameOver
 }
 
-export type GameGui = LayeredHtmlElements< GameLayerId >
+export type GameGui = LayeredHtmlElements<GameLayerId>
 
-export { 
-    switchHtmlLayer 
+export {
+    switchHtmlLayer
 }

@@ -25,20 +25,20 @@ interface IGameContext {
 
 //-------------------------------------------------------------------------------------------------------------------
 
-export function startGame( canvas : HTMLCanvasElement, gui: GameGui ) {
+export function startGame( canvas: HTMLCanvasElement, gui: GameGui ) {
 
     const aspectRatio = canvas.clientWidth / canvas.clientHeight
     const playFieldWidth = 96 // should be divisable by aspectRatio
 
-    const game: IGameContext = { 
+    const game: IGameContext = {
         status: GameStatus.Playing,
-        ecs: new ECS(), 
-        ctx: <CanvasRenderingContext2D> canvas.getContext( '2d' ), 
+        ecs: new ECS(),
+        ctx: <CanvasRenderingContext2D>canvas.getContext( '2d' ),
         playField: new PlayField( playFieldWidth, playFieldWidth / aspectRatio ),
         gui: gui,
     }
 
-    createAndAddSnake( game.ecs, game.playField, { x: game.playField.width / 2, y: game.playField.height / 2} )
+    createAndAddSnake( game.ecs, game.playField, { x: game.playField.width / 2, y: game.playField.height / 2 } )
 
     game.ecs.addSystem( new ObstacleGeneratorSystem( game.playField ) )
     game.ecs.addSystem( new MovementInputSystem() )

@@ -4,6 +4,6 @@ import { Component } from 'typed-ecstasy'
 export class NutritionComponent extends Component {
 
     constructor( public value: number = 1 ) {
-        super();
+        super()
     }
 }

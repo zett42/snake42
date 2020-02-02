@@ -14,7 +14,7 @@ import { IVec2, vec2add } from '../common/Vector'
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
     constructor( private _playField: PlayField, private _interval = 0.2 ) {
-        super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(), _interval, /*, priority*/ );
+        super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(), _interval )
     }
 
     //.................................................................................................................
@@ -24,51 +24,51 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         // Move snake by removing tail and inserting it in front of current head, incrementing position
         // based on DirectionComponent.
 
-        const ecs = this.getEngine()!;
+        const ecs = this.getEngine()!
 
         // Get snake head components
-        
-        const headComp           = entity.get( SnakeHeadComponent )!;        
-        if( ! headComp.isAlive ) {
-            return;
+
+        const headComp = entity.get( SnakeHeadComponent )!
+        if( !headComp.isAlive ) {
+            return
         }
 
-        const headPos            = entity.get( PositionComponent )!;
-        const direction          = entity.get( DirectionComponent )!;
-        const requestedDirection = entity.get( RequestedDirectionComponent )!;
-        const feedable           = entity.get( FeedableComponent )!;
+        const headPos = entity.get( PositionComponent )!
+        const direction = entity.get( DirectionComponent )!
+        const requestedDirection = entity.get( RequestedDirectionComponent )!
+        const feedable = entity.get( FeedableComponent )!
 
-        let newSegment: Entity;
+        let newSegment: Entity
 
         if( feedable.stomach > 0 ) {
             // Snake has eaten something -> insert a new segment.
 
-            newSegment = createSnakeSegment( ecs, this._playField );
+            newSegment = createSnakeSegment( ecs, this._playField )
 
-            --feedable.stomach;
+            --feedable.stomach
         }
         else {
             // Snake has not eaten -> keep its length, just move the current tail behind the head.
 
-            const currentTail = ecs.getEntity( headComp.tailId )!;
+            const currentTail = ecs.getEntity( headComp.tailId )!
 
-            const newTail = removeLastEntityFromDoubleLinkedList( ecs, currentTail )!;
+            const newTail = removeLastEntityFromDoubleLinkedList( ecs, currentTail )!
 
             // Make head point to new tail.
-            headComp.tailId = newTail.getId();
+            headComp.tailId = newTail.getId()
 
-            newSegment = currentTail;
+            newSegment = currentTail
         }
 
         // Insert new segment behind head.
-        insertEntityInDoubleLinkedList( ecs, newSegment, entity );
+        insertEntityInDoubleLinkedList( ecs, newSegment, entity )
 
         // Set position of new segment to current position of head.
-        setEntityPosition( this._playField, newSegment, headPos );
+        setEntityPosition( this._playField, newSegment, headPos )
 
         // Update position of head.
-        const directionVec = this.changeDirection( requestedDirection, direction );
-        setEntityPosition( this._playField, entity, vec2add( headPos, directionVec ) );
+        const directionVec = this.changeDirection( requestedDirection, direction )
+        setEntityPosition( this._playField, entity, vec2add( headPos, directionVec ) )
     }
 
     //.................................................................................................................
@@ -78,22 +78,22 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         switch( requestedDirection.value ) {
             case Direction.left:
                 if( direction.value != Direction.right )
-                    direction.value = requestedDirection.value;
-                break;
+                    direction.value = requestedDirection.value
+                break
             case Direction.right:
                 if( direction.value != Direction.left )
-                    direction.value = requestedDirection.value;
-                break;
+                    direction.value = requestedDirection.value
+                break
             case Direction.up:
                 if( direction.value != Direction.down )
-                    direction.value = requestedDirection.value;
-                break;
+                    direction.value = requestedDirection.value
+                break
             case Direction.down:
                 if( direction.value != Direction.up )
-                    direction.value = requestedDirection.value;
-                break;
+                    direction.value = requestedDirection.value
+                break
         }
 
-        return directionToVec2( direction.value );
+        return directionToVec2( direction.value )
     }
 }

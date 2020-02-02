@@ -6,26 +6,26 @@ import { DirectionComponent, RequestedDirectionComponent, Direction, directionTo
 import { FeedableComponent } from '../components/FeedableComponent'
 import { setEntityPosition } from '../common/SetEntityPosition'
 import { PlayField } from '../common/PlayField'
-import { IVec2, vec2add, vec2sub } from '../common/Vector';
-import { ObstacleComponent } from '../components/ObstacleComponent';
+import { IVec2, vec2add, vec2sub } from '../common/Vector'
+import { ObstacleComponent } from '../components/ObstacleComponent'
 
 //--------------------------------------------------------------------------------------------------------
 /**
  * Create initial snake consisting of three segments (head, middle and tail).
  */
-export function createAndAddSnake( 
+export function createAndAddSnake(
     ecs: ECS, playField: PlayField, position: IVec2, direction: Direction = randomDirection() ) {
 
-    const directionVec = directionToVec2( direction );
+    const directionVec = directionToVec2( direction )
 
-    const snakeTail = createSnakeSegment( ecs, playField, vec2sub( position, directionVec ) );
+    const snakeTail = createSnakeSegment( ecs, playField, vec2sub( position, directionVec ) )
 
-    const snakeMiddle = createSnakeSegment( ecs, playField, position );
+    const snakeMiddle = createSnakeSegment( ecs, playField, position )
 
-    const snakeHead = createSnakeHead( ecs, playField, vec2add( position, directionVec ), snakeTail, direction );
+    const snakeHead = createSnakeHead( ecs, playField, vec2add( position, directionVec ), snakeTail, direction )
 
-    appendEntityToDoubleLinkedList( snakeTail, snakeMiddle );
-    appendEntityToDoubleLinkedList( snakeMiddle, snakeHead );
+    appendEntityToDoubleLinkedList( snakeTail, snakeMiddle )
+    appendEntityToDoubleLinkedList( snakeMiddle, snakeHead )
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -33,21 +33,21 @@ export function createAndAddSnake(
  * Create a snake segment.
  */
 export function createSnakeSegment(
-    ecs: ECS, playField: PlayField, position: IVec2|null = null ): Entity {
+    ecs: ECS, playField: PlayField, position: IVec2 | null = null ): Entity {
 
-    const result = ecs.createEntity();
+    const result = ecs.createEntity()
 
-    result.add( new PositionComponent );
-    result.add( new DoubleLinkComponent );
-    result.add( new ObstacleComponent );  // to detect collision with itself
+    result.add( new PositionComponent )
+    result.add( new DoubleLinkComponent )
+    result.add( new ObstacleComponent )  // to detect collision with itself
 
-    ecs.addEntity( result );
+    ecs.addEntity( result )
 
     if( position !== null ) {
-        setEntityPosition( playField, result, position );
+        setEntityPosition( playField, result, position )
     }
 
-    return result;
+    return result
 }
 
 //--------------------------------------------------------------------------------------------------------
@@ -55,22 +55,22 @@ export function createSnakeSegment(
  * Create a snake head.
  */
 export function createSnakeHead(
-    ecs: ECS, playField: PlayField, position: IVec2|null = null, snakeTail: Entity, direction: Direction ): Entity {
+    ecs: ECS, playField: PlayField, position: IVec2 | null = null, snakeTail: Entity, direction: Direction ): Entity {
 
-    const result = ecs.createEntity();
-    
-    result.add( new PositionComponent );
-    result.add( new DoubleLinkComponent );
-    result.add( new SnakeHeadComponent( snakeTail.getId() ) );
-    result.add( new DirectionComponent( direction ) );
-    result.add( new RequestedDirectionComponent );
-    result.add( new FeedableComponent );
+    const result = ecs.createEntity()
 
-    ecs.addEntity( result );
+    result.add( new PositionComponent )
+    result.add( new DoubleLinkComponent )
+    result.add( new SnakeHeadComponent( snakeTail.getId() ) )
+    result.add( new DirectionComponent( direction ) )
+    result.add( new RequestedDirectionComponent )
+    result.add( new FeedableComponent )
+
+    ecs.addEntity( result )
 
     if( position !== null ) {
-        setEntityPosition( playField, result, position );
+        setEntityPosition( playField, result, position )
     }
 
-    return result;
+    return result
 }

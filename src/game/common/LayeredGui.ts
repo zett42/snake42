@@ -1,9 +1,9 @@
 
-export type LayeredHtmlElements< IdType > = Map< IdType, HTMLElement >;
+export type LayeredHtmlElements<IdType> = Map<IdType, HTMLElement>
 
-export function switchHtmlLayer< IdType >( layers: LayeredHtmlElements< IdType >, layerToActivate: IdType ) : boolean {
+export function switchHtmlLayer<IdType>( layers: LayeredHtmlElements<IdType>, layerToActivate: IdType ): boolean {
 
-    let isMadeVisible = false;
+    let isMadeVisible = false
 
     for( let [ key, layer ] of layers.entries() ) {
 
@@ -12,9 +12,9 @@ export function switchHtmlLayer< IdType >( layers: LayeredHtmlElements< IdType >
                 layer.classList.remove( 'hiddenLayer' )
                 isMadeVisible = true
             }
-        } 
+        }
         else {
-            if( ! layer.classList.contains( 'hiddenLayer' ) ) {
+            if( !layer.classList.contains( 'hiddenLayer' ) ) {
                 layer.classList.add( 'hiddenLayer' )
             }
         }
