@@ -22,7 +22,7 @@ export function createAndAddSnake(
 
     const snakeMiddle = createSnakeSegment( ecs, playField, position )
 
-    const snakeHead = createSnakeHead( ecs, playField, vec2add( position, directionVec ), snakeTail, direction )
+    const snakeHead = createSnakeHead( ecs, playField, vec2add( position, directionVec ), snakeTail, direction, 3 )
 
     appendEntityToDoubleLinkedList( snakeTail, snakeMiddle )
     appendEntityToDoubleLinkedList( snakeMiddle, snakeHead )
@@ -55,13 +55,13 @@ export function createSnakeSegment(
  * Create a snake head.
  */
 export function createSnakeHead(
-    ecs: ECS, playField: PlayField, position: IVec2 | null = null, snakeTail: Entity, direction: Direction ): Entity {
+    ecs: ECS, playField: PlayField, position: IVec2 | null = null, snakeTail: Entity, direction: Direction, length: number ): Entity {
 
     const result = ecs.createEntity()
 
     result.add( new PositionComponent )
     result.add( new DoubleLinkComponent )
-    result.add( new SnakeHeadComponent( snakeTail.getId() ) )
+    result.add( new SnakeHeadComponent( snakeTail.getId(), true, length ) )
     result.add( new DirectionComponent( direction ) )
     result.add( new RequestedDirectionComponent )
     result.add( new FeedableComponent )

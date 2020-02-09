@@ -28,12 +28,12 @@ interface IGameContext {
 export function startGame( canvas: HTMLCanvasElement, gui: GameGui ) {
 
     const aspectRatio = canvas.clientWidth / canvas.clientHeight
-    const playFieldWidth = 96 // should be divisable by aspectRatio
+    const playFieldWidth = 64 // should be divisable by aspectRatio
 
     const game: IGameContext = {
         status: GameStatus.Playing,
         ecs: new ECS(),
-        ctx: <CanvasRenderingContext2D>canvas.getContext( '2d' ),
+        ctx: <CanvasRenderingContext2D> canvas.getContext( '2d' ),
         playField: new PlayField( playFieldWidth, playFieldWidth / aspectRatio ),
         gui: gui,
     }

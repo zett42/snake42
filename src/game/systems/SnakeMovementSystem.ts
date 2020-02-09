@@ -45,6 +45,8 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
 
             newSegment = createSnakeSegment( ecs, this._playField )
 
+            ++headComp.length
+
             --feedable.stomach
         }
         else {

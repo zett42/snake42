@@ -8,7 +8,8 @@ export class SnakeHeadComponent extends Component {
 
     constructor(
         public tailId: number = 0,
-        public isAlive: boolean = true
+        public isAlive: boolean = true,
+        public length: number = 0
     ) {
         super()
     }

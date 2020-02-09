@@ -3,7 +3,7 @@ import { PositionComponent } from '../components/PositionComponent'
 import { DoubleLinkComponent } from '../components/DoubleLinkComponent'
 import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
 import { ISize, IVec2 } from '../common/Vector'
-import { DirectionComponent, Direction } from '../components/DirectionComponent'
+import * as Color from 'color'
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ export class SnakeRenderSystem extends EntitySystem {
 
         super.addedToEngine( engine )
 
-        this._entities = engine.getEntitiesFor( Family.all( PositionComponent, DoubleLinkComponent ).get() )
+        this._entities = engine.getEntitiesFor( Family.all( PositionComponent, SnakeHeadComponent, DoubleLinkComponent ).get() )
     }
 
     update( deltaTime: number ): void {
@@ -30,107 +30,55 @@ export class SnakeRenderSystem extends EntitySystem {
         const w = ctx.canvas.width / this._playField.width
         const h = ctx.canvas.height / this._playField.height
 
-        const headSize = 0.5 * w
-        const borderWidth = 0.1 * w
-        const entitySize = 0.4 * w
-        const linkSize = 0.3 * w
-        const eyeSize = 0.12 * w
-        const eyeDist1 = 0.25 * w
-        const eyeDist2 = 0.20 * w
+        const radius     = 0.40 * w
+        const radius2    = 0.25 * w
+        const startColor = Color( "#FFEF00" )
+        const endColor   = Color( "#FF3F00" )
 
-        const borderStyle = "#7F6C00"
-        const fillStyle = "#F2CF00"
-        const linkStyle = "#7F6C00"
-        const eyeStyle = "#003FFF"
+        ctx.lineWidth = 1.5
 
-        // Draw links
+        // Draw all snakes
 
-        for( const entity of this._entities ) {
+        for( const headEntity of this._entities ) {
 
-            const pos = entity.get( PositionComponent )!
-            const { x, y } = this.entityToCanvasPos( pos )
+            // Draw headEntity
 
-            const link = entity.get( DoubleLinkComponent )!
-            if( link.prevId !== null ) {
+            const headPos  = headEntity.get( PositionComponent )!
+            const headComp = headEntity.get( SnakeHeadComponent )!
+            const headLink = headEntity.get( DoubleLinkComponent )!
 
-                const prevEntity = ecs.getEntity( link.prevId )!
-                const prevEntityPos = prevEntity.get( PositionComponent )!
+            const { x, y } = this.entityToCanvasPos( headPos )
 
-                let p: IVec2 = { x: x, y: y }
+            ctx.strokeStyle = startColor.hsl().string()
+            ctx.beginPath()
+            ctx.ellipse( x, y, radius, radius, 0, 0, Math.PI * 2 )
+            ctx.stroke()
+            ctx.beginPath()
+            ctx.ellipse( x, y, radius2, radius2, 0, 0, Math.PI * 2 )
+            ctx.stroke()
 
-                if( prevEntityPos.x < pos.x ) {
-                    p.x = x - w / 2
-                }
-                else if( prevEntityPos.x > pos.x ) {
-                    p.x = x + w / 2
-                }
-                else if( prevEntityPos.y < pos.y ) {
-                    p.y = y - h / 2
-                }
-                else {
-                    p.y = y + h / 2
-                }
+            // Draw remaining segments
 
-                ctx.beginPath()
-                ctx.ellipse( p.x, p.y, linkSize, linkSize, 0, 0, Math.PI * 2 )
-                ctx.fillStyle = linkStyle
-                ctx.fill()
-            }
-        }
+            let iSeg = 1
+            let segId = headLink.prevId
 
-        // Draw entities
+            while( segId !== null ) {
 
-        for( const entity of this._entities ) {
+                const segmentEntity = ecs.getEntity( segId )!
+                const segPos = segmentEntity.get( PositionComponent )!
+                const segLink = segmentEntity.get( DoubleLinkComponent )!
 
-            const pos = entity.get( PositionComponent )!
-            const { x, y } = this.entityToCanvasPos( pos )
+                const { x, y } = this.entityToCanvasPos( segPos )
 
-            const headComp = entity.get( SnakeHeadComponent )
-            if( headComp ) {
-
-                const direction = entity.get( DirectionComponent )!
-
-                // Head
+                const color = startColor.mix( endColor, iSeg / headComp.length )
+                ctx.strokeStyle = color.hsl().string()
 
                 ctx.beginPath()
-                ctx.ellipse( x, y, headSize, headSize, 0, 0, Math.PI * 2 )
-                ctx.fillStyle = fillStyle
-                ctx.fill()
-
-                ctx.lineWidth = borderWidth
-                ctx.strokeStyle = borderStyle
+                ctx.ellipse( x, y, radius, radius, 0, 0, Math.PI * 2 )
                 ctx.stroke()
 
-                // Eyes
-
-                if( direction.value != Direction.none ) {
-
-                    let p1: IVec2 = { x: 0, y: 0 }, p2: IVec2 = { x: 0, y: 0 }
-                    switch( direction.value ) {
-                        case Direction.down: p1.x = -eyeDist2; p2.x = eyeDist2; p1.y = p2.y = eyeDist1; break
-                        case Direction.up: p1.x = -eyeDist2; p2.x = eyeDist2; p1.y = p2.y = -eyeDist1; break
-                        case Direction.right: p1.x = p2.x = eyeDist1; p1.y = -eyeDist2; p2.y = eyeDist2; break
-                        case Direction.left: p1.x = p2.x = -eyeDist1; p1.y = -eyeDist2; p2.y = eyeDist2; break
-                    }
-
-                    ctx.beginPath()
-                    ctx.ellipse( x + p1.x, y + p1.y, eyeSize, eyeSize, 0, 0, Math.PI * 2 )
-                    ctx.ellipse( x + p2.x, y + p2.y, eyeSize, eyeSize, 0, 0, Math.PI * 2 )
-                    ctx.fillStyle = eyeStyle
-                    ctx.fill()
-                }
-            }
-            else {
-                // Segment
-
-                ctx.beginPath()
-                ctx.ellipse( x, y, entitySize, entitySize, 0, 0, Math.PI * 2 )
-                ctx.fillStyle = fillStyle
-                ctx.fill()
-
-                ctx.lineWidth = borderWidth
-                ctx.strokeStyle = borderStyle
-                ctx.stroke()
+                segId = segLink.prevId
+                ++iSeg
             }
         }
     }
