@@ -1,4 +1,4 @@
-import { Family, Entity, EntitySystem, Engine } from 'typed-ecstasy'
+import { Family, Entity, IntervalSystem, Engine } from 'typed-ecstasy'
 import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -14,12 +14,12 @@ export interface IGameState {
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class GameStateSystem extends EntitySystem {
+export class GameStateSystem extends IntervalSystem {
 
     private _entities: Entity[] = []
 
-    constructor( private _state: IGameState ) {
-        super( 0 )
+    constructor( private _state: IGameState, interval: number ) {
+        super( interval )
     }
 
     protected addedToEngine( engine: Engine ): void {
@@ -29,7 +29,7 @@ export class GameStateSystem extends EntitySystem {
         this._entities = engine.getEntitiesFor( Family.all( SnakeHeadComponent ).get() )
     }
 
-    update( deltaTime: number ): void {
+    updateInterval(): void {
 
         const headsAlive = this._entities.filter( ( entity ) => entity.get( SnakeHeadComponent )!.isAlive )
 

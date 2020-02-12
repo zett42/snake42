@@ -13,8 +13,9 @@ import { IVec2, vec2add } from '../common/Vector'
 
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
-    constructor( private _playField: PlayField, private _interval = 0.2 ) {
-        super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(), _interval )
+    constructor( private _playField: PlayField, interval: number ) {
+        super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(),
+               interval )
     }
 
     //.................................................................................................................

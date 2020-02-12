@@ -1,14 +1,14 @@
-import { IteratingSystem, Family, Entity } from 'typed-ecstasy'
+import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { Direction, RequestedDirectionComponent } from '../components/DirectionComponent'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class MovementInputSystem extends IteratingSystem {
+export class MovementInputSystem extends IntervalIteratingSystem {
 
     private _inputDirection: Direction = Direction.none;
 
-    constructor() {
-        super( Family.all( RequestedDirectionComponent ).get() /*, priority*/ )
+    constructor( interval: number ) {
+        super( Family.all( RequestedDirectionComponent ).get(), interval )
 
         document.addEventListener( "keydown", ( event: KeyboardEvent ) => {
 
@@ -29,7 +29,7 @@ export class MovementInputSystem extends IteratingSystem {
         } )
     }
 
-    protected processEntity( entity: Entity, deltaTime: number ): void {
+    protected processEntity( entity: Entity ): void {
 
         const direction = entity.get( RequestedDirectionComponent )!
         direction.value = this._inputDirection

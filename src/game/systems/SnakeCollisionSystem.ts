@@ -1,4 +1,4 @@
-import { Family, Entity, IteratingSystem } from 'typed-ecstasy'
+import { Family, Entity, IntervalIteratingSystem } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
 import { ObstacleComponent } from '../components/ObstacleComponent'
@@ -6,13 +6,13 @@ import { PlayField } from '../common/PlayField'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class CollisionSystem extends IteratingSystem {
+export class CollisionSystem extends IntervalIteratingSystem {
 
-    constructor( private _playField: PlayField ) {
-        super( Family.all( PositionComponent, SnakeHeadComponent ).get() /*, priority*/ )
+    constructor( private _playField: PlayField, interval: number ) {
+        super( Family.all( PositionComponent, SnakeHeadComponent ).get(), interval )
     }
 
-    protected processEntity( entity: Entity, deltaTime: number ): void {
+    protected processEntity( entity: Entity ): void {
 
         const ecs = this.getEngine()!
 

@@ -1,4 +1,4 @@
-import { Engine, EntitySystem, Family, Entity } from 'typed-ecstasy'
+import { Engine, IntervalSystem, Family, Entity } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { DoubleLinkComponent } from '../components/DoubleLinkComponent'
 import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
@@ -7,12 +7,12 @@ import * as Color from 'color'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class SnakeRenderSystem extends EntitySystem {
+export class SnakeRenderSystem extends IntervalSystem {
 
     private _entities: Entity[] = [];
 
-    constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize ) {
-        super( 0 )
+    constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize, interval: number ) {
+        super( interval )
     }
 
     protected addedToEngine( engine: Engine ): void {
@@ -22,7 +22,7 @@ export class SnakeRenderSystem extends EntitySystem {
         this._entities = engine.getEntitiesFor( Family.all( PositionComponent, SnakeHeadComponent, DoubleLinkComponent ).get() )
     }
 
-    update( deltaTime: number ): void {
+    updateInterval(): void {
 
         const ecs = this.getEngine()!
         const ctx = this._ctx

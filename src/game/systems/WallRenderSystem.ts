@@ -1,17 +1,17 @@
-import { Family, Entity, IteratingSystem } from 'typed-ecstasy'
+import { Family, Entity, IntervalIteratingSystem } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { WallComponent } from '../components/WallComponent'
 import { ISize, IVec2 } from '../common/Vector'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class WallRenderSystem extends IteratingSystem {
+export class WallRenderSystem extends IntervalIteratingSystem {
 
-    constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize ) {
-        super( Family.all( PositionComponent, WallComponent ).get() /*, priority*/ )
+    constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize, interval: number ) {
+        super( Family.all( PositionComponent, WallComponent ).get(), interval )
     }
 
-    protected processEntity( entity: Entity, deltaTime: number ): void {
+    protected processEntity( entity: Entity ): void {
 
         const ecs = this.getEngine()!
         const ctx = this._ctx

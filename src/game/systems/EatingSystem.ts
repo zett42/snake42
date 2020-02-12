@@ -1,4 +1,4 @@
-import { Family, Entity, IteratingSystem } from 'typed-ecstasy'
+import { Family, Entity, IntervalIteratingSystem } from 'typed-ecstasy'
 import { PositionComponent } from '../components/PositionComponent'
 import { FeedableComponent } from '../components/FeedableComponent'
 import { NutritionComponent } from '../components/FoodComponents'
@@ -6,15 +6,15 @@ import { PlayField } from '../common/PlayField'
 
 //---------------------------------------------------------------------------------------------------------------------
 
-export class EatingSystem extends IteratingSystem {
+export class EatingSystem extends IntervalIteratingSystem {
 
-    constructor( private _playField: PlayField ) {
-        super( Family.all( PositionComponent, FeedableComponent ).get() /*, priority*/ )
+    constructor( private _playField: PlayField, interval: number ) {
+        super( Family.all( PositionComponent, FeedableComponent ).get(), interval )
     }
 
     //.................................................................................................................
 
-    protected processEntity( entity: Entity, deltaTime: number ): void {
+    protected processEntity( entity: Entity ): void {
 
         const ecs = this.getEngine()!
 

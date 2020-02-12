@@ -1,4 +1,4 @@
-import { Engine, EntitySystem, Family, Entity } from 'typed-ecstasy'
+import { Engine, EntitySystem } from 'typed-ecstasy'
 import { ObstacleComponent } from '../components/ObstacleComponent'
 import { WallComponent } from '../components/WallComponent'
 import { PositionComponent } from '../components/PositionComponent'

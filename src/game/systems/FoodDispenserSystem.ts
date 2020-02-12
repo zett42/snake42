@@ -10,7 +10,7 @@ export class FoodDispenserSystem extends IntervalSystem {
 
     private _foodEntities: Entity[] = [];
 
-    constructor( private _playField: PlayField, private _foodCount: number = 500, interval: number = 1.0 ) {
+    constructor( private _playField: PlayField, private _foodCount: number, interval: number ) {
         super( interval )
     }
 
