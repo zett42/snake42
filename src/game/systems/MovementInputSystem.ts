@@ -1,14 +1,18 @@
 import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { Direction, RequestedDirectionComponent } from '../components/DirectionComponent'
 
+interface MovementInputSharedState {
+    interval: number
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 export class MovementInputSystem extends IntervalIteratingSystem {
 
     private _inputDirection: Direction = Direction.none;
 
-    constructor( interval: number ) {
-        super( Family.all( RequestedDirectionComponent ).get(), interval )
+    constructor( state: MovementInputSharedState ) {
+        super( Family.all( RequestedDirectionComponent ).get(), state.interval )
 
         document.addEventListener( "keydown", ( event: KeyboardEvent ) => {
 

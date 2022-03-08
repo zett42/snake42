@@ -2,6 +2,7 @@ import { Engine as ECS } from 'typed-ecstasy'
 import { PlayField } from './common/PlayField'
 import { createAndAddSnake } from './factories/SnakeFactory'
 import { GameStatus, GameStateSystem } from './systems/GameStateSystem'
+import { IGameProgress } from './common/GameProgress'
 import { MovementInputSystem } from './systems/MovementInputSystem'
 import { SnakeMovementSystem } from './systems/SnakeMovementSystem'
 import { FoodDispenserSystem } from './systems/FoodDispenserSystem'
@@ -13,6 +14,7 @@ import { SnakeRenderSystem } from './systems/SnakeRenderSystem'
 import { FoodRenderSystem } from './systems/FoodRenderSystem'
 import { WallRenderSystem } from './systems/WallRenderSystem'
 import { GameGui, switchHtmlLayer, GameLayerId } from './common/GameGui'
+import { Direction } from './components/DirectionComponent'
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -23,6 +25,7 @@ interface IGameContext {
     playField: PlayField
     gui      : GameGui
     interval : number
+    progress : IGameProgress
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -38,16 +41,19 @@ export function startGame( canvas: HTMLCanvasElement, gui: GameGui ) {
         ctx: <CanvasRenderingContext2D> canvas.getContext( '2d' ),
         playField: new PlayField( playFieldWidth, playFieldWidth / aspectRatio ),
         gui: gui,
-        interval: 0.1
+        interval: 0.3,
+        progress: { score: 0 }
     }
 
-    createAndAddSnake( game.ecs, game.playField, { x: game.playField.width / 2, y: game.playField.height / 2 } )
 
-    game.ecs.addSystem( new ObstacleGeneratorSystem( game.playField ) )
-    game.ecs.addSystem( new MovementInputSystem( game.interval ) )
+    createAndAddSnake( game.ecs, game.playField, { x: game.playField.width / 2, y: game.playField.height / 2 },
+                       Math.random() > 0.5 ? Direction.left : Direction.right );
+
+    game.ecs.addSystem( new ObstacleGeneratorSystem( game ) )
+    game.ecs.addSystem( new MovementInputSystem( game ) )
     game.ecs.addSystem( new SnakeMovementSystem( game.playField, game.interval ) )
     game.ecs.addSystem( new FoodDispenserSystem( game.playField, 500, game.interval ) )
-    game.ecs.addSystem( new EatingSystem( game.playField, game.interval ) )
+    game.ecs.addSystem( new EatingSystem( game.playField, game.progress, game.interval ) )
     game.ecs.addSystem( new CollisionSystem( game.playField, game.interval ) )
     game.ecs.addSystem( new ClearRenderSystem( game.ctx, game.interval ) )
     game.ecs.addSystem( new FoodRenderSystem( game.ctx, game.playField, game.interval ) )
@@ -63,6 +69,10 @@ export function startGame( canvas: HTMLCanvasElement, gui: GameGui ) {
 function gameLoop( game: IGameContext, lastTime: number = 0 ) {
 
     if( game.status === GameStatus.GameOver ) {
+
+        console.log("SCORE: ", game.progress.score)
+
+        document.getElementById( 'score' )!.innerText = game.progress.score.toString()
 
         switchHtmlLayer( game.gui, GameLayerId.GameOver )
 

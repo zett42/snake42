@@ -12,6 +12,10 @@ export interface IGameState {
     status: GameStatus
 }
 
+export interface IGameProgress {
+    score: number
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 
 export class GameStateSystem extends IntervalSystem {

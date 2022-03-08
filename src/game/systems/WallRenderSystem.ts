@@ -24,7 +24,7 @@ export class WallRenderSystem extends IntervalIteratingSystem {
         const pos = entity.get( PositionComponent )!
         const { x, y } = this.entityToCanvasPos( pos )
 
-        ctx.fillStyle = "#777777"
+        ctx.fillStyle = "#666666"
         ctx.fillRect( x - obstacleSize / 2, y - obstacleSize / 2, obstacleSize, obstacleSize )
     }
 

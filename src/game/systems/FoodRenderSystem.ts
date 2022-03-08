@@ -21,11 +21,14 @@ export class FoodRenderSystem extends IntervalIteratingSystem {
         const w = this._ctx.canvas.width / this._playField.width
         const h = this._ctx.canvas.height / this._playField.height
 
-        const scale = 0.15 + 0.3 * nutrition.value / 5
+        const scale = 0.075 + 0.15 * nutrition.value / 5
 
         this._ctx.beginPath()
-        this._ctx.ellipse( x, y, w * scale, h * scale, 0, 0, Math.PI * 2 )
-        this._ctx.fillStyle = "#3fe03f"
-        this._ctx.fill()
+        this._ctx.moveTo( x - w * scale, y )
+        this._ctx.lineTo( x + w * scale, y )
+        this._ctx.moveTo( x, y - h * scale )
+        this._ctx.lineTo( x, y + h * scale )
+        this._ctx.strokeStyle = "#3fe03f"
+        this._ctx.stroke()
     }
 }
