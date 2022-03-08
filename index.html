@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv=X-UA-Compatible content="IE=edge">
+    <meta name=viewport content="width=device-width,initial-scale=1">
+
+    <title>z42snake</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div id="main">
+        <div id="menuScreen" class="layer">
+            <div>
+                <h1>z42snake</h1>
+                <h2>Click to start game!</h2>
+                <p>Use arrow keys to control snake.</p>
+            </div>
+        </div>
+
+        <div id="gameOverScreen" class="layer hiddenLayer">
+            <div>
+                <h1>Game Over</h1>
+                <h2>Your score: <span id="score"></span></h2>
+                <br>
+                <h2>Click to restart game!</h2>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" class="layer hiddenLayer"></canvas>
+    </div>
+    <script src="dist/bundle.js"></script>
+</body>
+</html>
