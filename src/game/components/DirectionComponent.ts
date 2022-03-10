@@ -1,5 +1,5 @@
 import { Component } from 'typed-ecstasy'
-import { IVec2 } from '../common/Vector'
+import { IVec2 } from '@common/Vector'
 
 export enum Direction {
     none, right, left, up, down
@@ -21,7 +21,7 @@ export class RequestedDirectionComponent extends Component {
 
 export function directionToVec2( dir: Direction ): IVec2 {
 
-    let result = { x: 0, y: 0 }
+    const result = { x: 0, y: 0 }
 
     switch( dir ) {
         case Direction.right: result.x = 1; break

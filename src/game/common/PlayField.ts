@@ -1,20 +1,38 @@
-import { IVec2 } from './Vector'
+import { Service } from 'typedi'
+import { IVec2 } from '@common/Vector'
 
 export interface PlayFieldCell {
     entityIds: number[]
 }
 
+@Service()
 export class PlayField {
 
-    public readonly width: number
-    public readonly height: number
+    private _data: PlayFieldCell[] = []
+    private _width = 0
+    private _height = 0
+    private _usedCellCount = 0;
 
-    constructor( width: number, height: number ) {
+    get width(): number { return this._width }
 
-        this.width = Math.trunc( width )
-        this.height = Math.trunc( height )
+    get height(): number { return this._height }
 
-        let size = this.width * this.height
+    get usedCellCount(): number { return this._usedCellCount }
+
+    constructor() {
+        console.log("PlayField constructor")
+    }
+
+    reset(): void { 
+        this.resize( this._width, this._height )
+    }
+
+    resize( width: number, height: number ): void {
+
+        this._width = Math.trunc( width )
+        this._height = Math.trunc( height )
+
+        let size = this._width * this._height
         this._data = new Array<PlayFieldCell>( size )
         while( size-- ) {
             this._data[ size ] = { entityIds: [] }
@@ -23,10 +41,10 @@ export class PlayField {
 
     getCell( pos: IVec2 ): PlayFieldCell {
 
-        return this._data[ this.width * pos.y + pos.x ]
+        return this._data[ this._width * pos.y + pos.x ]
     }
 
-    insertEntity( pos: IVec2, id: number ) {
+    insertEntity( pos: IVec2, id: number ): void {
 
         const cell = this.getCell( pos )
 
@@ -40,7 +58,7 @@ export class PlayField {
         }
     }
 
-    removeEntity( pos: IVec2, id: number ) {
+    removeEntity( pos: IVec2, id: number ): void {
 
         const cell = this.getCell( pos )
 
@@ -54,9 +72,4 @@ export class PlayField {
             }
         }
     }
-
-    get usedCellCount() { return this._usedCellCount }
-
-    private _data: PlayFieldCell[]
-    private _usedCellCount: number = 0;
 }

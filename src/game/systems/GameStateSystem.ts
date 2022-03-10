@@ -1,5 +1,6 @@
-import { Family, Entity, IntervalSystem, Engine } from 'typed-ecstasy'
-import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
+import { Service } from 'typedi'
+import { Family, IntervalSystem } from 'typed-ecstasy'
+import { SnakeHeadComponent } from '@components/SnakeHeadComponent'
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -8,37 +9,28 @@ export enum GameStatus {
     GameOver
 }
 
-export interface IGameState {
-    status: GameStatus
-}
-
 export interface IGameProgress {
     score: number
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
+@Service()
 export class GameStateSystem extends IntervalSystem {
 
-    private _entities: Entity[] = []
+    public status: GameStatus = GameStatus.Playing
 
-    constructor( private _state: IGameState, interval: number ) {
-        super( interval )
-    }
-
-    protected addedToEngine( engine: Engine ): void {
-
-        super.addedToEngine( engine )
-
-        this._entities = engine.getEntitiesFor( Family.all( SnakeHeadComponent ).get() )
+    constructor() {
+        super( 0 )
     }
 
     updateInterval(): void {
 
-        const headsAlive = this._entities.filter( ( entity ) => entity.get( SnakeHeadComponent )!.isAlive )
+        const entities = this.engine.entities.forFamily( Family.all( SnakeHeadComponent ).get() )
+        const headsAlive = entities.filter( ( entity ) => entity.get( SnakeHeadComponent )!.isAlive )
 
         if( headsAlive.length === 0 ) {
-            this._state.status = GameStatus.GameOver
+            this.status = GameStatus.GameOver
         }
     }
 }

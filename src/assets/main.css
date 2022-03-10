@@ -1,6 +1,6 @@
 @font-face { 
 	font-family: "Px437"; 
-	src: url("../ttf/Px437_IBM_BIOS.ttf") format('truetype'); 
+	src: url("ttf/Px437_IBM_BIOS.ttf") format('truetype'); 
 }	
 
 html, body {

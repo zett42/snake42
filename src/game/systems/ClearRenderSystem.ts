@@ -1,15 +1,19 @@
+import { Service } from 'typedi'
 import { IntervalSystem } from 'typed-ecstasy'
+import { GameGui } from '@common/GameGui'
 
 //---------------------------------------------------------------------------------------------------------------------
 
+@Service()
 export class ClearRenderSystem extends IntervalSystem {
 
-    constructor( private _ctx: CanvasRenderingContext2D, interval: number ) {
-        super( interval )
+    constructor( private _gui: GameGui ) {
+        super( 0 )
     }
-
     protected updateInterval(): void {
 
-        this._ctx.clearRect( 0, 0, this._ctx.canvas.width, this._ctx.canvas.height )
+        const ctx = this._gui.ctx
+
+        ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height )
     }
 }

@@ -19,7 +19,7 @@ export class DoubleLinkComponent extends Component {
  * Append entity to list.
  */
 
-export function appendEntityToDoubleLinkedList( current: Entity, toAppend: Entity ) {
+export function appendEntityToDoubleLinkedList( current: Entity, toAppend: Entity ): void {
 
     const currentLink = current.get( DoubleLinkComponent )!
     const toAppendLink = toAppend.get( DoubleLinkComponent )!
@@ -33,14 +33,14 @@ export function appendEntityToDoubleLinkedList( current: Entity, toAppend: Entit
  * Insert entity before given entity.
  */
 
-export function insertEntityInDoubleLinkedList( ecs: Engine, toInsert: Entity, insertBefore: Entity ) {
+export function insertEntityInDoubleLinkedList( ecs: Engine, toInsert: Entity, insertBefore: Entity ): void {
 
     const toInsertLink = toInsert.get( DoubleLinkComponent )!
 
     const insertBeforeLink = insertBefore.get( DoubleLinkComponent )!
 
     if( insertBeforeLink.prevId ) {
-        const insertAfter = ecs.getEntity( insertBeforeLink.prevId )!
+        const insertAfter = ecs.entities.get( insertBeforeLink.prevId )!
         const insertAfterLink = insertAfter.get( DoubleLinkComponent )!
         insertAfterLink.nextId = toInsert.getId()
 
@@ -62,7 +62,7 @@ export function removeLastEntityFromDoubleLinkedList( ecs: Engine, lastEntity: E
     const lastEntityLink = lastEntity.get( DoubleLinkComponent )!
 
     if( lastEntityLink.nextId ) {
-        const newLastEntity = ecs.getEntity( lastEntityLink.nextId )!
+        const newLastEntity = ecs.entities.get( lastEntityLink.nextId )!
         const newLastEntityLink = newLastEntity.get( DoubleLinkComponent )!
         newLastEntityLink.prevId = null
 

@@ -1,9 +1,9 @@
 import { Entity } from 'typed-ecstasy'
-import { PositionComponent } from '../components/PositionComponent'
-import { PlayField } from './PlayField'
-import { IVec2 } from './Vector'
+import { PositionComponent } from '@components/PositionComponent'
+import { PlayField } from '@common/PlayField'
+import { IVec2 } from '@common/Vector'
 
-export function setEntityPosition( playField: PlayField, entity: Entity, pos: IVec2 ) {
+export function setEntityPosition( playField: PlayField, entity: Entity, pos: IVec2 ): void {
 
     pos = { x: Math.trunc( pos.x ), y: Math.trunc( pos.y ) }
 

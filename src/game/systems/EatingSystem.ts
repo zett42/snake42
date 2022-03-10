@@ -1,23 +1,28 @@
+import { Service } from 'typedi'
 import { Family, Entity, IntervalIteratingSystem } from 'typed-ecstasy'
-import { PositionComponent } from '../components/PositionComponent'
-import { FeedableComponent } from '../components/FeedableComponent'
-import { NutritionComponent } from '../components/FoodComponents'
-import { PlayField } from '../common/PlayField'
-import { IGameProgress } from '../common/GameProgress'
+import { PositionComponent } from '@components/PositionComponent'
+import { FeedableComponent } from '@components/FeedableComponent'
+import { NutritionComponent } from '@components/FoodComponents'
+import { PlayField } from '@common/PlayField'
+import { GameProgress } from '@common/GameProgress'
 
 //---------------------------------------------------------------------------------------------------------------------
 
+@Service()
 export class EatingSystem extends IntervalIteratingSystem {
 
-    constructor( private _playField: PlayField, private _progress: IGameProgress, interval: number ) {
-        super( Family.all( PositionComponent, FeedableComponent ).get(), interval )
+    constructor( 
+        private _playField: PlayField, 
+        private _progress: GameProgress ) {
+        
+        super( Family.all( PositionComponent, FeedableComponent ).get(), 0 )
     }
 
     //.................................................................................................................
 
     protected processEntity( entity: Entity ): void {
 
-        const ecs = this.getEngine()!
+        const ecs = this.engine
 
         const position = entity.get( PositionComponent )!
 
@@ -25,7 +30,7 @@ export class EatingSystem extends IntervalIteratingSystem {
 
         for( const cellEntityId of cell.entityIds ) {
 
-            const cellEntity = ecs.getEntity( cellEntityId )
+            const cellEntity = ecs.entities.get( cellEntityId )
             if( cellEntity ) {
 
                 // Check if cell has food
@@ -40,7 +45,7 @@ export class EatingSystem extends IntervalIteratingSystem {
 
                     // Remove the food entity
                     this._playField.removeEntity( position, cellEntityId )
-                    ecs.removeEntity( cellEntity )
+                    ecs.entities.remove( cellEntity )
                 }
             }
         }

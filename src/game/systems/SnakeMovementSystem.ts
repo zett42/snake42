@@ -1,31 +1,37 @@
+import Container, { Service } from 'typedi'
 import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent } from '../components/PositionComponent'
-import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from '../components/DirectionComponent'
-import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
-import { DoubleLinkComponent, insertEntityInDoubleLinkedList, removeLastEntityFromDoubleLinkedList } from '../components/DoubleLinkComponent'
-import { FeedableComponent } from '../components/FeedableComponent'
-import { createSnakeSegment } from '../factories/SnakeFactory'
-import { setEntityPosition } from '../common/SetEntityPosition'
-import { PlayField } from '../common/PlayField'
-import { IVec2, vec2add } from '../common/Vector'
+import { PositionComponent } from '@components/PositionComponent'
+import { DirectionComponent, Direction, RequestedDirectionComponent, directionToVec2 } from '@components/DirectionComponent'
+import { SnakeHeadComponent } from '@components/SnakeHeadComponent'
+import { DoubleLinkComponent, insertEntityInDoubleLinkedList, removeLastEntityFromDoubleLinkedList } from '@components/DoubleLinkComponent'
+import { FeedableComponent } from '@components/FeedableComponent'
+import { createSnakeSegment } from '@factories/SnakeFactory'
+import { setEntityPosition } from '@common/SetEntityPosition'
+import { PlayField } from '@common/PlayField'
+import { IVec2, vec2add } from '@common/Vector'
 
 //---------------------------------------------------------------------------------------------------------------------
 
+@Service()
 export class SnakeMovementSystem extends IntervalIteratingSystem {
 
-    constructor( private _playField: PlayField, interval: number ) {
+    constructor( public _playField: PlayField ) {
+
         super( Family.all( SnakeHeadComponent, PositionComponent, DoubleLinkComponent, DirectionComponent, RequestedDirectionComponent, FeedableComponent ).get(),
-               interval )
+               0 )
     }
 
     //.................................................................................................................
 
     protected processEntity( entity: Entity ): void {
 
+        const _playField = Container.get( PlayField )
+        console.log( "SnakeMovementSystem playField: ", _playField.width, _playField.height  )
+    
+        //console.log( "playField: ", this._playField.width, this._playField.height  )
+
         // Move snake by removing tail and inserting it in front of current head, incrementing position
         // based on DirectionComponent.
-
-        const ecs = this.getEngine()!
 
         // Get snake head components
 
@@ -44,7 +50,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         if( feedable.stomach > 0 ) {
             // Snake has eaten something -> insert a new segment.
 
-            newSegment = createSnakeSegment( ecs, this._playField )
+            newSegment = createSnakeSegment( this.engine, this._playField )
 
             ++headComp.length
 
@@ -53,9 +59,9 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         else {
             // Snake has not eaten -> keep its length, just move the current tail behind the head.
 
-            const currentTail = ecs.getEntity( headComp.tailId )!
+            const currentTail = this.engine.entities.get( headComp.tailId )!
 
-            const newTail = removeLastEntityFromDoubleLinkedList( ecs, currentTail )!
+            const newTail = removeLastEntityFromDoubleLinkedList( this.engine, currentTail )!
 
             // Make head point to new tail.
             headComp.tailId = newTail.getId()
@@ -64,7 +70,7 @@ export class SnakeMovementSystem extends IntervalIteratingSystem {
         }
 
         // Insert new segment behind head.
-        insertEntityInDoubleLinkedList( ecs, newSegment, entity )
+        insertEntityInDoubleLinkedList( this.engine, newSegment, entity )
 
         // Set position of new segment to current position of head.
         setEntityPosition( this._playField, newSegment, headPos )

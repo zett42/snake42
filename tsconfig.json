@@ -1,31 +1,35 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "commonjs",
-        "importHelpers": true,
-        "lib": [
-          "es2015",
-          "es2017",
-          "dom"
-        ],      
-        "strict": true, 
-        "strictNullChecks": true,
-        "strictPropertyInitialization": true,
-        "noImplicitAny": false,
-        "outDir": "dist",
-        "rootDir": ".",
-        "sourceMap": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "baseUrl": ".",
-        "paths": {
-          "@/*": [
-            "src/*"
-          ]
-        }
+  "compilerOptions": {
+    "rootDir": ".",        
+    "outDir": "./dist/",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "lib": [
+        "es2015",
+        "es2017",
+        "dom"
+    ],      
+    "strict": true, 
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/*", "dist/*"],
+      "@common/*": ["src/game/common/*", "dist/game/common/*"],
+      "@components/*": ["src/game/components/*", "dist/game/components/*"],
+      "@systems/*": ["src/game/systems/*", "dist/game/systems/*"],
+      "@factories/*": ["src/game/factories/*", "dist/game/factories/*"]
     },
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]	
+  },
+  "exclude": ["spec"]
 }

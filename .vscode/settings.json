@@ -10,6 +10,15 @@
     "webpack.config.js": true,
     "app.js": true,
     ".gitignore": true,
-    "_start.bat": true
+    "_start.bat": true,
+    "_config.yml": true,
+    "_deploy.sh": true,
+    ".eslintignore": true,
+    ".eslintrc.js": true,
+    "jest.config.js": true,
+    "LICENSE": true,
+    "webpack.common.js": true,
+    "webpack.dev.js": true,
+    "webpack.prod.js": true
   }
 }

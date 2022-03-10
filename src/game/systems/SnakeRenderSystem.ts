@@ -1,34 +1,32 @@
-import { Engine, IntervalSystem, Family, Entity } from 'typed-ecstasy'
-import { PositionComponent } from '../components/PositionComponent'
-import { DoubleLinkComponent } from '../components/DoubleLinkComponent'
-import { SnakeHeadComponent } from '../components/SnakeHeadComponent'
-import { ISize, IVec2 } from '../common/Vector'
+import { Service } from 'typedi'
+import { IntervalSystem, Family } from 'typed-ecstasy'
 import * as Color from 'color'
+import { PositionComponent } from '@components/PositionComponent'
+import { DoubleLinkComponent } from '@components/DoubleLinkComponent'
+import { SnakeHeadComponent } from '@components/SnakeHeadComponent'
+import { IVec2 } from '@common/Vector'
+import { PlayField } from '@common/PlayField'
+import { GameGui } from '../common/GameGui'
 
 //---------------------------------------------------------------------------------------------------------------------
 
+@Service()
 export class SnakeRenderSystem extends IntervalSystem {
 
-    private _entities: Entity[] = [];
-
-    constructor( private _ctx: CanvasRenderingContext2D, private _playField: ISize, interval: number ) {
-        super( interval )
-    }
-
-    protected addedToEngine( engine: Engine ): void {
-
-        super.addedToEngine( engine )
-
-        this._entities = engine.getEntitiesFor( Family.all( PositionComponent, SnakeHeadComponent, DoubleLinkComponent ).get() )
+    constructor( 
+        private _gui: GameGui, 
+        private _playField: PlayField ) {
+        
+        super( 0 )
     }
 
     updateInterval(): void {
 
-        const ecs = this.getEngine()!
-        const ctx = this._ctx
+        const entities = this.engine.entities.forFamily( Family.all( PositionComponent, SnakeHeadComponent, DoubleLinkComponent ).get() )
+
+        const ctx = this._gui.ctx
 
         const w = ctx.canvas.width / this._playField.width
-        const h = ctx.canvas.height / this._playField.height
 
         const radius     = 0.40 * w
         const radius2    = 0.25 * w
@@ -39,7 +37,7 @@ export class SnakeRenderSystem extends IntervalSystem {
 
         // Draw all snakes
 
-        for( const headEntity of this._entities ) {
+        for( const headEntity of entities ) {
 
             // Draw headEntity
 
@@ -64,7 +62,7 @@ export class SnakeRenderSystem extends IntervalSystem {
 
             while( segId !== null ) {
 
-                const segmentEntity = ecs.getEntity( segId )!
+                const segmentEntity = this.engine.entities.get( segId )!
                 const segPos = segmentEntity.get( PositionComponent )!
                 const segLink = segmentEntity.get( DoubleLinkComponent )!
 
@@ -84,8 +82,8 @@ export class SnakeRenderSystem extends IntervalSystem {
     }
 
     entityToCanvasPos( pos: IVec2 ): IVec2 {
-        const x = ( pos.x + 0.5 ) / this._playField.width * this._ctx.canvas.width
-        const y = ( pos.y + 0.5 ) / this._playField.height * this._ctx.canvas.height
+        const x = ( pos.x + 0.5 ) / this._playField.width * this._gui.ctx.canvas.width
+        const y = ( pos.y + 0.5 ) / this._playField.height * this._gui.ctx.canvas.height
         return { x: x, y: y }
     }
 }

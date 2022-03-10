@@ -5,7 +5,7 @@ export function switchHtmlLayer<IdType>( layers: LayeredHtmlElements<IdType>, la
 
     let isMadeVisible = false
 
-    for( let [ key, layer ] of layers.entries() ) {
+    for( const [ key, layer ] of layers.entries() ) {
 
         if( key === layerToActivate ) {
             if( layer.classList.contains( 'hiddenLayer' ) ) {
