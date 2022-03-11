@@ -22,7 +22,7 @@ export class GameStateSystem extends IntervalSystem {
     constructor( private _gameSignals: GameSignals ) {
         super( 0 )
 
-        _gameSignals.startSignal.connect( () => this._status = GameStatus.Playing )
+        _gameSignals.start.connect( () => this._status = GameStatus.Playing )
     }
 
     updateInterval(): void {
@@ -33,7 +33,7 @@ export class GameStateSystem extends IntervalSystem {
         if( headsAlive.length === 0 ) {
 
             this._status = GameStatus.GameOver
-            this._gameSignals.gameOverSignal.emit()
+            this._gameSignals.gameOver.emit()
         }
     }
 }

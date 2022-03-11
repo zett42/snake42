@@ -41,14 +41,14 @@ export class GameGui {
 
         const startGame = () => {
             if( this.switchToLayer( GameLayerId.Game ) ) {
-                this._gameSignals.startSignal.emit()
+                this._gameSignals.start.emit()
             }
         }
 
         this._menuScreen.addEventListener( "click", startGame )
         this._gameOverScreen.addEventListener( "click", startGame )
 
-        this._gameSignals.gameOverSignal.connect( () => {
+        this._gameSignals.gameOver.connect( () => {
             this.switchToLayer( GameLayerId.GameOver )
             this.showGameResult()
         })

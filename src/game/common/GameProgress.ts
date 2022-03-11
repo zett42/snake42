@@ -5,7 +5,7 @@ import { GameSignals } from "@common/GameSignals"
 export class GameProgress {
     public score = 0
 
-    constructor( private _gameSignals: GameSignals ) {
-        _gameSignals.startSignal.connect( () => this.score = 0 )
+    constructor( gameSignals: GameSignals ) {
+        gameSignals.start.connect( () => this.score = 0 )
     }
 }

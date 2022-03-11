@@ -10,7 +10,7 @@ export class MovementInputSystem extends IntervalIteratingSystem {
 
     private _inputDirection: Direction = Direction.none;
 
-    constructor( private _gameSignals: GameSignals ) {
+    constructor( gameSignals: GameSignals ) {
         super( Family.all( RequestedDirectionComponent ).get(), 0 )
 
         document.addEventListener( "keydown", ( event: KeyboardEvent ) => {
@@ -31,7 +31,7 @@ export class MovementInputSystem extends IntervalIteratingSystem {
             }
         } )
 
-        _gameSignals.startSignal.connect( () => this._inputDirection = Direction.none )           
+        gameSignals.start.connect( () => this._inputDirection = Direction.none )           
     }
 
     protected processEntity( entity: Entity ): void {

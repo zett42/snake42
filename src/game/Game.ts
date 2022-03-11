@@ -38,7 +38,7 @@ export class Game {
         this._ecs.systems.add( SnakeRenderSystem ) 
         this._ecs.systems.add( GameStateSystem )
 
-        this._gameSignals.startSignal.connect( () => this.newGame() )
+        this._gameSignals.start.connect( () => this.newGame() )
     }
 
     private newGame(): void {

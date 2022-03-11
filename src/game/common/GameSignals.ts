@@ -3,6 +3,6 @@ import { Signal } from 'typed-signals'
 
 @Service()
 export class GameSignals {
-    startSignal = new Signal< () => void >();
-    gameOverSignal = new Signal< () => void >();
+    readonly start = new Signal< () => void >();
+    readonly gameOver = new Signal< () => void >();
 }
