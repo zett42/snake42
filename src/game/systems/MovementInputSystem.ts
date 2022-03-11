@@ -1,6 +1,7 @@
 import { Service } from 'typedi'
 import { IntervalIteratingSystem, Family, Entity } from 'typed-ecstasy'
 import { Direction, RequestedDirectionComponent } from '@components/DirectionComponent'
+import { GameSignals } from '@common/GameSignals'
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -9,7 +10,7 @@ export class MovementInputSystem extends IntervalIteratingSystem {
 
     private _inputDirection: Direction = Direction.none;
 
-    constructor() {
+    constructor( private _gameSignals: GameSignals ) {
         super( Family.all( RequestedDirectionComponent ).get(), 0 )
 
         document.addEventListener( "keydown", ( event: KeyboardEvent ) => {
@@ -29,9 +30,9 @@ export class MovementInputSystem extends IntervalIteratingSystem {
                     break
             }
         } )
-    }
 
-    reset(): void { this._inputDirection = Direction.none }
+        _gameSignals.startSignal.connect( () => this._inputDirection = Direction.none )           
+    }
 
     protected processEntity( entity: Entity ): void {
 

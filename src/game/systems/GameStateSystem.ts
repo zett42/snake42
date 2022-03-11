@@ -1,16 +1,13 @@
 import { Service } from 'typedi'
 import { Family, IntervalSystem } from 'typed-ecstasy'
 import { SnakeHeadComponent } from '@components/SnakeHeadComponent'
+import { GameSignals } from '@common/GameSignals'
 
 //---------------------------------------------------------------------------------------------------------------------
 
 export enum GameStatus {
     Playing,
     GameOver
-}
-
-export interface IGameProgress {
-    score: number
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -20,8 +17,10 @@ export class GameStateSystem extends IntervalSystem {
 
     public status: GameStatus = GameStatus.Playing
 
-    constructor() {
+    constructor( private _gameSignals: GameSignals ) {
         super( 0 )
+
+        _gameSignals.startSignal.connect( () => this.status = GameStatus.Playing )
     }
 
     updateInterval(): void {
@@ -30,7 +29,9 @@ export class GameStateSystem extends IntervalSystem {
         const headsAlive = entities.filter( ( entity ) => entity.get( SnakeHeadComponent )!.isAlive )
 
         if( headsAlive.length === 0 ) {
+
             this.status = GameStatus.GameOver
+            this._gameSignals.gameOverSignal.emit()
         }
     }
 }

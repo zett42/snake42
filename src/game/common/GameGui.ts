@@ -1,6 +1,8 @@
 import { Service } from 'typedi'
 import { LayeredHtmlElements, switchHtmlLayer } from '@app/game/common/LayeredGuiUtils'
 import * as wutil from '@app/utils/windowUtils'
+import { GameProgress } from '@common/GameProgress'
+import { GameSignals } from '@common/GameSignals'
 
 export enum GameLayerId {
     Menu,
@@ -27,9 +29,11 @@ export class GameGui {
         [ GameLayerId.GameOver, this._gameOverScreen ],
     ])
 
-    public onGameStart: OnGameStartCallback|null = null
+    constructor( 
+            private _progress: GameProgress,
+            private _gameSignals: GameSignals
+        ) {
 
-    constructor() {
         wutil.resizeCanvasPixelBuffer( this._canvas )
 
         // On window resize, resize the canvas to fill browser window dynamically.
@@ -39,23 +43,26 @@ export class GameGui {
         // Toggle fullscreen by double-click on canvas.
         this._canvas.addEventListener( "dblclick", wutil.toggleFullscreen )
 
-        const switchToGameAndPlay = () => {
+        const startGame = () => {
             if( switchHtmlLayer( this._layerMap, GameLayerId.Game ) ) {
-                if( this.onGameStart ) {
-                    this.onGameStart()
-                }
+                this._gameSignals.startSignal.emit()
             }
         }
 
-        this._menuScreen.addEventListener( "click", switchToGameAndPlay )
-        this._gameOverScreen.addEventListener( "click", switchToGameAndPlay )
+        this._menuScreen.addEventListener( "click", startGame )
+        this._gameOverScreen.addEventListener( "click", startGame )
+
+        this._gameSignals.gameOverSignal.connect( () => {
+            this.switchToLayer( GameLayerId.GameOver )
+            this.showGameResult()
+        })
     }
 
     public switchToLayer( id: GameLayerId ): void {
         switchHtmlLayer( this._layerMap, id )
     }
 
-    public showScore( score: number ): void {
-        document.getElementById( 'score' )!.innerText = score.toString()
+    public showGameResult(): void {
+        document.getElementById( 'score' )!.innerText = this._progress.score.toString()
     }
 }
