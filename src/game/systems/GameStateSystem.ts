@@ -15,12 +15,14 @@ export enum GameStatus {
 @Service()
 export class GameStateSystem extends IntervalSystem {
 
-    public status: GameStatus = GameStatus.Playing
+    private _status: GameStatus = GameStatus.Playing
+
+    get status(): GameStatus { return this._status }
 
     constructor( private _gameSignals: GameSignals ) {
         super( 0 )
 
-        _gameSignals.startSignal.connect( () => this.status = GameStatus.Playing )
+        _gameSignals.startSignal.connect( () => this._status = GameStatus.Playing )
     }
 
     updateInterval(): void {
@@ -30,7 +32,7 @@ export class GameStateSystem extends IntervalSystem {
 
         if( headsAlive.length === 0 ) {
 
-            this.status = GameStatus.GameOver
+            this._status = GameStatus.GameOver
             this._gameSignals.gameOverSignal.emit()
         }
     }

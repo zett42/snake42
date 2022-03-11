@@ -23,10 +23,6 @@ export class PlayField {
         console.log("PlayField constructor")
     }
 
-    reset(): void { 
-        this.resize( this._width, this._height )
-    }
-
     resize( width: number, height: number ): void {
 
         this._width = Math.trunc( width )

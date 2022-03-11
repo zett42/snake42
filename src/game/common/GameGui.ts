@@ -10,21 +10,17 @@ export enum GameLayerId {
     GameOver
 }
 
-export type OnGameStartCallback = () => void;
-
 @Service()
 export class GameGui {
 
-    private _canvas = document.getElementById( 'gameCanvas' ) as HTMLCanvasElement
-    private _menuScreen = document.getElementById( 'menuScreen' ) as HTMLElement
-    private _gameOverScreen = document.getElementById( 'gameOverScreen' ) as HTMLElement
+    public readonly canvas = document.getElementById( 'gameCanvas' ) as HTMLCanvasElement
+    private readonly _menuScreen = document.getElementById( 'menuScreen' ) as HTMLElement
+    private readonly _gameOverScreen = document.getElementById( 'gameOverScreen' ) as HTMLElement
 
-    get canvas(): HTMLCanvasElement { return this._canvas }
-
-    get ctx(): CanvasRenderingContext2D { return this._canvas.getContext( '2d' ) as CanvasRenderingContext2D }
+    get ctx(): CanvasRenderingContext2D { return this.canvas.getContext( '2d' ) as CanvasRenderingContext2D }
 
     private _layerMap: LayeredHtmlElements<GameLayerId> = new Map([
-        [ GameLayerId.Game, this._canvas ],
+        [ GameLayerId.Game, this.canvas ],
         [ GameLayerId.Menu, this._menuScreen ],
         [ GameLayerId.GameOver, this._gameOverScreen ],
     ])
@@ -34,17 +30,17 @@ export class GameGui {
             private _gameSignals: GameSignals
         ) {
 
-        wutil.resizeCanvasPixelBuffer( this._canvas )
+        wutil.resizeCanvasPixelBuffer( this.canvas )
 
         // On window resize, resize the canvas to fill browser window dynamically.
         // Use debounce() to avoid costly calculations while the window size is in flux.
-        window.addEventListener( "resize", () => wutil.resizeCanvasPixelBuffer( this._canvas ) )
+        window.addEventListener( "resize", () => wutil.resizeCanvasPixelBuffer( this.canvas ) )
 
         // Toggle fullscreen by double-click on canvas.
-        this._canvas.addEventListener( "dblclick", wutil.toggleFullscreen )
+        this.canvas.addEventListener( "dblclick", wutil.toggleFullscreen )
 
         const startGame = () => {
-            if( switchHtmlLayer( this._layerMap, GameLayerId.Game ) ) {
+            if( this.switchToLayer( GameLayerId.Game ) ) {
                 this._gameSignals.startSignal.emit()
             }
         }
@@ -58,11 +54,11 @@ export class GameGui {
         })
     }
 
-    public switchToLayer( id: GameLayerId ): void {
-        switchHtmlLayer( this._layerMap, id )
+    private switchToLayer( id: GameLayerId ): boolean {
+        return switchHtmlLayer( this._layerMap, id )
     }
 
-    public showGameResult(): void {
+    private showGameResult(): void {
         document.getElementById( 'score' )!.innerText = this._progress.score.toString()
     }
 }
